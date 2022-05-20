@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yardimeliflutter/pages/LoginPage.dart';
 
 import 'API/ModelOganization.dart';
 import 'API/OrganizationApiService.dart';
@@ -17,11 +18,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        scaffoldBackgroundColor: Color(0xffe6e5ea),
-        primarySwatch: Colors.blue,
+      theme: ThemeData().copyWith(
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ThemeData().colorScheme.copyWith(primary: const Color(0xff7f0000)),
       ),
-      home: const HomeScreen(),
+      home: const LoginPage(),
     );
   }
 }
