@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:yardimeliflutter/CustomAppBar.dart';
 import 'package:yardimeliflutter/pages/CampaignPage.dart';
 import 'package:yardimeliflutter/pages/OrganizationPage.dart';
 import 'package:yardimeliflutter/pages/ProfilePage.dart';
@@ -21,9 +22,30 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text("yardım eli"),
-        backgroundColor: Color(0xff7f0000),
+        // flexibleSpace: ClipPath(
+        //   clipper: CustomAppBar(),
+        //   child: Container(
+        //     height: 250,
+        //     width: MediaQuery.of(context).size.width,
+        //     color: Color(0xff7f0000),
+        //   ),
+        // ),
+        title: Hero(
+            tag: "yardimelibaslik",
+            child: Material(
+              color: Color(0xff7f0000),
+              child: Text(
+                "yardım eli ",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20
+                ),),
+            )
+        ),
+       backgroundColor: Color(0xff7f0000),
       ),
       body: IndexedStack(
         index: currentindex,
