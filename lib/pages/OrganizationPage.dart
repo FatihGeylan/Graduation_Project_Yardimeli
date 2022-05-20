@@ -39,12 +39,21 @@ class _OrganizationPageState extends State<OrganizationPage> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                      return OrganizationDetailPage(orgmodel.data![index]);
-                    },));
-
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (c, a1, a2) => OrganizationDetailPage(orgmodel.data![index]),
+                        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+                        transitionDuration: Duration(milliseconds: 300),
+                      ),
+                    );
+                    //Navigator.of(context).push(MaterialPageRoute(builder: (context) {return OrganizationDetailPage(orgmodel.data![index]);},));
                   },
                   child: Card(
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     margin: const EdgeInsets.all(16),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -54,9 +63,26 @@ class _OrganizationPageState extends State<OrganizationPage> {
                             child: Column(
                               children: [
                                 Container(
-                                  child: Image.asset(
-                                    "lib/pictures/${orgmodel.data![index].photoUrl}",
-                                    height: 120,
+                                  padding: EdgeInsets.only(bottom: 8),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        width: 2,
+                                        color: Color(0xffe6e5ea)
+                                      )
+                                    )
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Hero(
+                                        tag: "orgpic"+orgmodel.data![index].photoUrl,
+                                        child: Image.asset(
+                                          "lib/pictures/${orgmodel.data![index].photoUrl}",
+                                          height: 100,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(
@@ -92,9 +118,6 @@ class _OrganizationPageState extends State<OrganizationPage> {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 16,
-                                )
                               ],
                             ),
                           ),
