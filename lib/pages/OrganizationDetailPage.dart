@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yardimeliflutter/API/ModelOganization.dart';
+import 'package:yardimeliflutter/Model/ModelOganization.dart';
 
 class OrganizationDetailPage extends StatelessWidget {
   final Organization organization;

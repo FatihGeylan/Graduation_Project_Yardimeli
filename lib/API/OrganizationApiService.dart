@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 import 'ConstantsOrganizations.dart';
-import 'ModelOganization.dart';
+import '../Model/ModelOganization.dart';
 
 class ApiService {
   Future<Organizationmodel?> getUsers() async {

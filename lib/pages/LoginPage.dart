@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yardimeliflutter/API/ModelUser.dart';
+import 'package:yardimeliflutter/Model/ModelUser.dart';
 import 'package:yardimeliflutter/HomeScreen.dart';
 
 import '../API/AuthAPI.dart';
@@ -161,9 +161,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _gotoHomeScreen(BuildContext context){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context){
-      return const HomeScreen();
-    },));
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+          (Route<dynamic> route) => false,
+    );
   }
 }
 

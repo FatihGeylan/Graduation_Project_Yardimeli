@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 import 'ConstantCampaign.dart';
-import 'ModelCampaign.dart';
+import '../Model/ModelCampaign.dart';
 
 class ApiService {
   Future<Campaignmodel?> getUsers() async {

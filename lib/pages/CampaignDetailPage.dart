@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:yardimeliflutter/API/ModelOganization.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:yardimeliflutter/Model/ModelOganization.dart';
+import 'package:yardimeliflutter/animation/horizontalScrollAnimation.dart';
 
-import '../API/ModelCampaign.dart';
+import '../Model/ModelCampaign.dart';
+import '../my_flutter_app_icons.dart';
 
 class CampaignDetailPage extends StatelessWidget {
   final Campaign campaign;
-  const CampaignDetailPage(this.campaign, {Key? key}) : super(key: key);
+  final String axis;
+  const CampaignDetailPage(this.campaign, this.axis, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,41 +37,188 @@ class CampaignDetailPage extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
+          child: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Row(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 2,
-                                  color: Color(0xffe6e5ea)
-                              )
-                          )
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Hero(
-                          tag: "orgpic" + campaign.name,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 250,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage("lib/pictures/${campaign.photoUrl}"),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Hero(
+                              tag: "orgpic" + campaign.name+axis,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 250,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                  image: DecorationImage(
+                                    fit: BoxFit.fitWidth,
+                                    image: AssetImage("lib/pictures/${campaign.photoUrl}"),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          if(campaign.categoryId=="1")...[
+                            Container(
+                              padding: EdgeInsets.only(left: 8,bottom: 8),
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                                    alignment: Alignment.centerLeft,
+                                    decoration: BoxDecoration(
+                                      color: Colors.redAccent.shade100,
+                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    ),
+                                    child: Row(
+                                      //mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.favorite_border),
+                                        Text(" Sağlık")
+                                      ],
+                                    ),
+
+                                  ),
+                                ],
+                              ),
+                            )
+                          ]else if(campaign.categoryId=="2")...[
+                            Container(
+
+                              padding: EdgeInsets.only(left: 8,bottom: 8),
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                                    alignment: Alignment.centerLeft,
+                                    decoration: BoxDecoration(
+                                      color: Colors.lightBlueAccent.shade100,
+                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.school_outlined),
+                                        Text(" Eğitim")
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ]else if(campaign.categoryId=="3")...[
+                            Container(
+                              padding: EdgeInsets.only(left: 8,bottom: 8),
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                                    alignment: Alignment.centerLeft,
+                                    decoration: BoxDecoration(
+                                      color: Colors.greenAccent.shade100,
+                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.pets_outlined),
+                                        Text(" Sokak Hayvanları")
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: horizontalSrollAnimation(
+                                  animationtext: Text(
+                                    campaign.name,
+                                    style: const TextStyle(
+                                      fontSize: 30,
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8,left: 8,right: 8),
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Mert Çelik tarafından  ●${campaign.city}",
+                                style: TextStyle(
+                                    color: Color(0xff5e5e5e),
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          LinearPercentIndicator(
+                            percent: 0.7,
+                            //percent: orgmodel.data![index].currentMoney>orgmodel.data![index].limit? 1:orgmodel.data![index].currentMoney/orgmodel.data![index].limit,
+                            progressColor: Color(0xff7f0000),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(width: 2, color: Color(0xffe6e5ea)))),
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                              child: Text(
+                                "${campaign.limit} ₺ hedefin ${campaign.currentMoney} ₺'si toplandı.",
+                                style: TextStyle(color: Color(0xff5e5e5e)),
+                              ),
+                            ),
+                          ),
+
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
+                            alignment: Alignment.topLeft,
+                            child: Text(campaign.description,
+                              style: TextStyle(
+                                  fontSize: 16
+                              ),
+                            ),
+                          ),
+                          Expanded(child: Container()),
+                          Container(
+                            alignment: Alignment.bottomCenter,
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    top: BorderSide(width: 2, color: Color(0xffe6e5ea)))),
+                            child: TextButton(
+                              onPressed: () {},
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.handshake_outlined),
+                                  Text("   Bağışta bulun")
+                                ],
+                              ),
+                            ),
+                          )
+
+
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
+              )
             ],
           ),
         ),

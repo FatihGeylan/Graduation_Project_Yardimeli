@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yardimeliflutter/pages/OrganizationDetailPage.dart';
 
-import '../API/ModelOganization.dart';
+import '../Model/ModelOganization.dart';
 import '../API/OrganizationApiService.dart';
 
 class OrganizationPage extends StatefulWidget {

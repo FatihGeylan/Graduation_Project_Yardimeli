@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yardimeliflutter/pages/LoginPage.dart';
 
-import 'API/ModelOganization.dart';
+import 'Model/ModelOganization.dart';
 import 'API/OrganizationApiService.dart';
 import 'HomeScreen.dart';
 import 'pages/OrganizationPage.dart';
