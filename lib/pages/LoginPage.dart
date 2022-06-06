@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yardimeliflutter/Model/ModelUser.dart';
 import 'package:yardimeliflutter/HomeScreen.dart';
 
 import '../API/AuthAPI.dart';
+import '../userprovider.dart';
 
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
 
   String email = '';
   String password = '';
@@ -25,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userprovider = ref.watch(userProvider);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -102,11 +105,11 @@ class _LoginPageState extends State<LoginPage> {
                                   try{
                                     var req = await
                                     _authAPI.login(_emailController.text,  _passwordController.text);
-                                    if(req.statusCode == 0){
+                                    if(req.statusCode == 200){
                                       print(req.body);
-                                      var user =
+                                      userprovider.user =
                                       User.fromReqBody(req.body);
-                                      user.printAttributes();
+                                      //user.printAttributes();
                                       _gotoHomeScreen(context);
                                     } else {
                                       print('Hatalı giriş falan');

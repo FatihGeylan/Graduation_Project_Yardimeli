@@ -77,7 +77,25 @@ class OrganizationDetailPage extends StatelessWidget {
                           "Yeşilay, insan onurunu ve saygınlığını temel alan, toplumu ve gençliği ayrım gözetmeden zararlı "
                               "alışkanlıklardan korumak için çalışan, milli ve ahlaki değerleri gözeterek ve bilimsel metotlar kullanarak "
                               "tütün(sigara), alkol, uyuşturucu madde, teknoloji, kumar vb. bağımlılıklarla mücadele eden; önleyici ve "
-                              "rehabilite edici halk sağlığı ve savunuculuk çalışmaları yürüten bir sivil toplum kuruluşudur.")
+                              "rehabilite edici halk sağlığı ve savunuculuk çalışmaları yürüten bir sivil toplum kuruluşudur."
+                      ),
+                      Spacer(),
+                      Container(
+                        alignment: Alignment.bottomCenter,
+                        decoration: BoxDecoration(
+                            border: Border(
+                                top: BorderSide(width: 2, color: Color(0xffe6e5ea)))),
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.handshake_outlined),
+                              Text("   Bağışta bulun")
+                            ],
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),

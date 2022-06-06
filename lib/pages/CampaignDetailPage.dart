@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:yardimeliflutter/Model/ModelOganization.dart';
 import 'package:yardimeliflutter/animation/horizontalScrollAnimation.dart';
+import 'package:yardimeliflutter/pages/campaignpayPage.dart';
 
 import '../Model/ModelCampaign.dart';
 import '../my_flutter_app_icons.dart';
@@ -64,82 +65,24 @@ class CampaignDetailPage extends StatelessWidget {
                             ),
                           ),
                           if(campaign.categoryId=="1")...[
-                            Container(
-                              padding: EdgeInsets.only(left: 8,bottom: 8),
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                                    alignment: Alignment.centerLeft,
-                                    decoration: BoxDecoration(
-                                      color: Colors.redAccent.shade100,
-                                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                                    ),
-                                    child: Row(
-                                      //mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(Icons.favorite_border),
-                                        Text(" Sağlık")
-                                      ],
-                                    ),
-
-                                  ),
-                                ],
-                              ),
+                            campaigncategorylabel(
+                              text: Text(" Sağlık"),
+                              icon: Icon(Icons.favorite_border),
+                              color: Colors.redAccent.shade100,
                             )
                           ]else if(campaign.categoryId=="2")...[
-                            Container(
-
-                              padding: EdgeInsets.only(left: 8,bottom: 8),
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                                    alignment: Alignment.centerLeft,
-                                    decoration: BoxDecoration(
-                                      color: Colors.lightBlueAccent.shade100,
-                                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.school_outlined),
-                                        Text(" Eğitim")
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            campaigncategorylabel(
+                              text: Text(" Eğitim"),
+                              icon: Icon(Icons.school_outlined),
+                              color: Colors.lightBlueAccent.shade100,
                             )
                           ]else if(campaign.categoryId=="3")...[
-                            Container(
-                              padding: EdgeInsets.only(left: 8,bottom: 8),
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                                    alignment: Alignment.centerLeft,
-                                    decoration: BoxDecoration(
-                                      color: Colors.greenAccent.shade100,
-                                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.pets_outlined),
-                                        Text(" Sokak Hayvanları")
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            campaigncategorylabel(
+                              text: Text(" Sokak Hayvanları"),
+                              icon: Icon(Icons.pets_outlined),
+                              color: Colors.greenAccent.shade100,
                             )
                           ],
-
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Container(
@@ -194,14 +137,28 @@ class CampaignDetailPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Expanded(child: Container()),
+                          Spacer(),
                           Container(
                             alignment: Alignment.bottomCenter,
                             decoration: BoxDecoration(
                                 border: Border(
                                     top: BorderSide(width: 2, color: Color(0xffe6e5ea)))),
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (c, a1, a2) =>
+                                        campaignpayPage(
+                                            campaign),
+                                    transitionsBuilder: (c, anim, a2, child) =>
+                                        FadeTransition(
+                                            opacity: anim, child: child),
+                                    transitionDuration:
+                                    Duration(milliseconds: 300),
+                                  ),
+                                );
+                              },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -222,6 +179,53 @@ class CampaignDetailPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class campaigncategorylabel extends StatelessWidget {
+  Icon icon;
+  Text text;
+  Color color;
+  Color? bordercolor;
+  campaigncategorylabel({
+    required this.color,
+    required this.text,
+    required this.icon,
+    this.bordercolor,
+    Key? key,
+  }) :super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left: 8,bottom: 8),
+      alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 2,
+                color: bordercolor != null ? bordercolor!:color
+              ),
+              color: color,
+              borderRadius: BorderRadius.all(Radius.circular(20),
+              ),
+            ),
+            child: Row(
+              //mainAxisSize: MainAxisSize.min,
+              children: [
+                icon,
+                text
+              ],
+            ),
+
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:yardimeliflutter/CustomAppBar.dart';
 import 'package:yardimeliflutter/pages/CampaignPage.dart';
 import 'package:yardimeliflutter/pages/OrganizationPage.dart';
 import 'package:yardimeliflutter/pages/ProfilePage.dart';
@@ -24,14 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBodyBehindAppBar: false,
       appBar: AppBar(
-        // flexibleSpace: ClipPath(
-        //   clipper: CustomAppBar(),
-        //   child: Container(
-        //     height: 250,
-        //     width: MediaQuery.of(context).size.width,
-        //     color: Color(0xff7f0000),
-        //   ),
-        // ),
         title: Hero(
             tag: "yardimelibaslik",
             child: Material(

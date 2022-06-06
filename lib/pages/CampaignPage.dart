@@ -1,184 +1,290 @@
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:yardimeliflutter/animation/horizontalScrollAnimation.dart';
-
-import '../API/CampaignApiService.dart';
+import 'package:yardimeliflutter/campaignpagestate.dart';
+import 'package:yardimeliflutter/pages/campaignpayPage.dart';
 import '../Model/ModelCampaign.dart';
 import 'CampaignDetailPage.dart';
 
-class CampaignPage extends StatefulWidget {
+class CampaignPage extends ConsumerStatefulWidget {
   const CampaignPage({Key? key}) : super(key: key);
 
   @override
-  State<CampaignPage> createState() => _CampaignPageState();
+  _CampaignPageState createState() => _CampaignPageState();
 }
 
-class _CampaignPageState extends State<CampaignPage> {
-  Campaignmodel orgmodel = new Campaignmodel();
-  List<Campaign> Allcampaign =[];
-  late final List<Campaign> campaignsamecity;
-  int selectedSortvalue=1;
-  int lastselectedSortvalue=1;
-  void _getData() async {
-    orgmodel = (await ApiService().getUsers())!;
-    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
-    campaignsamecity =
-        orgmodel.data!.where((element) => element.city == "Istanbul").toList();
-    Allcampaign=orgmodel.data!;
-    Allcampaign.sort((a,b){
-      return a.createdDate.compareTo(b.createdDate);
-    });
-  }
-
+class _CampaignPageState extends ConsumerState<CampaignPage> {
   @override
   void initState() {
-    _getData();
+    ref.read(campaignpageProvider).getData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final campaignprovider = ref.watch(campaignpageProvider);
     return Scaffold(
-      body: Allcampaign == null || Allcampaign.isEmpty
+      body: campaignprovider.Allcampaign == null ||
+              campaignprovider.Allcampaign.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Card(
-                      elevation: 8,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {},
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.filter_alt_outlined),
-                                    Text(" Filtrele")
-                                  ],
+          : RefreshIndicator(
+            onRefresh: () async{
+              refresh(campaignprovider);
+            },
+            child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Card(
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    filterBottomSheet(context, campaignprovider);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.filter_alt_outlined),
+                                      Text(" Filtrele")
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onTap: () {
-                                  _SortBottomSheet(context);
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [Icon(Icons.sort), Text(" Sırala")],
-                                ),
+                              VerticalDivider(
+                                color: Colors.grey.shade300,
+                                thickness: 2,
                               ),
-                            )
-                          ],
+                              Expanded(
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    _SortBottomSheet(context, campaignprovider);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [Icon(Icons.sort), Text(" Sırala")],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 16),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Şehrindeki kampanyalar",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    SizedBox(
+                      height: 8,
                     ),
-                  ),
-                  SizedBox(
-                    height: 290,
-                    child: ListView.builder(
-                      physics: ClampingScrollPhysics(),
-                      itemCount: campaignsamecity.length,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (c, a1, a2) =>
-                                      CampaignDetailPage(
-                                          campaignsamecity[index], "vert"),
-                                  transitionsBuilder: (c, anim, a2, child) =>
-                                      FadeTransition(
-                                          opacity: anim, child: child),
-                                  transitionDuration:
-                                      Duration(milliseconds: 300),
-                                ),
-                              );
-                            },
-                            child: CampaignCard(campaignsamecity[index], "vert"));
-                      },
+                    Container(
+                      padding: EdgeInsets.only(left: 16),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Şehrindeki kampanyalar",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 16),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Tüm kampanyalar",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    SizedBox(
+                      height: 290,
+                      child: ListView.builder(
+                        physics: ClampingScrollPhysics(),
+                        itemCount: campaignprovider.campaignsamecity.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (c, a1, a2) =>
+                                        CampaignDetailPage(
+                                            campaignprovider
+                                                .campaignsamecity[index],
+                                            "vert"),
+                                    transitionsBuilder: (c, anim, a2, child) =>
+                                        FadeTransition(
+                                            opacity: anim, child: child),
+                                    transitionDuration:
+                                        Duration(milliseconds: 300),
+                                  ),
+                                );
+                              },
+                              child: CampaignCard(
+                                  campaignprovider.campaignsamecity[index],
+                                  "vert"));
+                        },
+                      ),
                     ),
-                  ),
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: ListView.builder(
-                      physics: ClampingScrollPhysics(),
-                      itemCount: Allcampaign.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (c, a1, a2) =>
-                                      CampaignDetailPage(
-                                          Allcampaign[index], "hori"),
-                                  transitionsBuilder: (c, anim, a2, child) =>
-                                      FadeTransition(
-                                          opacity: anim, child: child),
-                                  transitionDuration:
-                                      Duration(milliseconds: 300),
-                                ),
-                              );
-                              //Navigator.of(context).push(MaterialPageRoute(builder: (context) {return OrganizationDetailPage(orgmodel.data![index]);},));
-                            },
-                            child: CampaignCard(Allcampaign[index], "hori"));
-                      },
+                    SizedBox(
+                      height: 8,
                     ),
-                  ),
-                ],
+                    Container(
+                      padding: EdgeInsets.only(left: 16),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Tüm kampanyalar",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: ListView.builder(
+                          physics: ClampingScrollPhysics(),
+                          itemCount: campaignprovider.Allcampaign.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (c, a1, a2) =>
+                                          CampaignDetailPage(
+                                              campaignprovider.Allcampaign[index],
+                                              "hori"),
+                                      transitionsBuilder: (c, anim, a2, child) =>
+                                          FadeTransition(
+                                              opacity: anim, child: child),
+                                      transitionDuration:
+                                          Duration(milliseconds: 300),
+                                    ),
+                                  );
+                                  //Navigator.of(context).push(MaterialPageRoute(builder: (context) {return OrganizationDetailPage(orgmodel.data![index]);},));
+                                },
+                                child: CampaignCard(
+                                    campaignprovider.Allcampaign[index], "hori"
+                                )
+                            );
+                          },
+                        ),
+                          // loading: () {
+                          //   return Center(child: CircularProgressIndicator());
+                          // },
+                          // error: ( error,stackTrace) {
+                          //   return Text("error");
+                          // },
+                          // onRefresh: ()async {  ref.refresh(campaignlistProvider);},
+                    ),
+                  ],
+                ),
               ),
-            ),
+          ),
     );
   }
 
-  void _SortBottomSheet(context) {
-    lastselectedSortvalue =selectedSortvalue;
+  Future refresh(campaignpageRepository campaignprovider)async{
+    campaignprovider.clearlist();
+    campaignprovider.getData();
+  }
+  Future<dynamic> filterBottomSheet(BuildContext context,campaignpageRepository campaignprovider) {
+    return showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        backgroundColor: Colors.white,
+        context: context,
+        builder: (BuildContext bc) {
+          return StatefulBuilder(
+              builder: (BuildContext context, setState) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * .60,
+                  padding: EdgeInsets.only(top: 12),
+                  child: Column(
+                    children: [
+                      Divider(
+                        color: Colors.grey.shade300,
+                        thickness: 3,
+                        height: 0,
+                        indent: 175,
+                        endIndent: 175,
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(left: 20, top: 8),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Kategoriye göre",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(left: 10, top: 8),
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () {
+                                setState((){
+                                  campaignprovider.changefiltercategory(0);
+                                });
+                              },
+                              child: campaigncategorylabel(
+                                text: Text(" Sağlık"),
+                                icon: Icon(Icons.favorite_border),
+                                color:campaignprovider.filtercategorybutton[0]? Colors.redAccent.shade100:Colors.white,
+                                bordercolor: campaignprovider.filtercategorybutton[0]? null:Colors.redAccent.shade100,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState((){
+                                  campaignprovider.changefiltercategory(1);
+                                });
+                              },
+                              child: campaigncategorylabel(
+                                text: Text(" Eğitim"),
+                                icon: Icon(Icons.school_outlined),
+                                color: campaignprovider.filtercategorybutton[1]?Colors.lightBlueAccent.shade100:Colors.white,
+                                bordercolor: campaignprovider.filtercategorybutton[1]?null:Colors.lightBlueAccent.shade100,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap:() {
+                                setState((){
+                                  campaignprovider.changefiltercategory(2);
+                                });
+
+                              },
+                              child: campaigncategorylabel(
+                                text: Text(" Sokak Hayvanları"),
+                                icon: Icon(Icons.pets_outlined),
+                                color:campaignprovider.filtercategorybutton[2]? Colors.greenAccent.shade100:Colors.white,
+                                bordercolor: campaignprovider.filtercategorybutton[2]?null:Colors.greenAccent.shade100,
+                              ),
+                            )
+
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              }
+          );
+        });
+  }
+
+  void _SortBottomSheet(context, campaignpageRepository campaignprovider) {
+    campaignprovider.lastselectedSortvalue = campaignprovider.selectedSortvalue;
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -186,89 +292,39 @@ class _CampaignPageState extends State<CampaignPage> {
         context: context,
         builder: (BuildContext bc) {
           return StatefulBuilder(
-            builder: (BuildContext context,setState){
+            builder: (BuildContext context, setState) {
               return Container(
-                  padding: EdgeInsets.only(top: 16),
+                  padding: EdgeInsets.only(top: 12),
                   height: MediaQuery.of(context).size.height * .60,
                   child: Column(
-
                     children: [
+                      Divider(
+                        color: Colors.grey.shade300,
+                        thickness: 3,
+                        height: 0,
+                        indent: 175,
+                        endIndent: 175,
+                      ),
                       Container(
-                        padding: EdgeInsets.only(left: 20,top: 8),
+                        padding: EdgeInsets.only(left: 20, top: 8),
                         alignment: Alignment.centerLeft,
-                        child: Text("Sıralama",
+                        child: Text(
+                          "Sıralama",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18
-                          ),
+                              fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                       ),
-
-                      RadioListTile<int>(
-                        activeColor: Color(0xff7f0000),
-                        value: 1,
-                        groupValue: selectedSortvalue,
-                        title: Text("En yeni kampanyalar (varsayılan)"),
-                        onChanged: (value){
-                          setState(() {
-                            selectedSortvalue = value!;
-                          });
-                        },
-                      ),
-                      Divider(
-                        color: Colors.grey.shade200,
-                        thickness: 2,
-                        height: 0,
-                        indent: 20,
-                        endIndent: 20,
-                      ),
-                      RadioListTile<int>(
-                        activeColor: Color(0xff7f0000),
-                        value: 2,
-                        groupValue: selectedSortvalue,
-                        title: Text("En eski kampanyalar"),
-                        onChanged: (value){
-                          setState(() {
-                            selectedSortvalue = value!;
-                          });
-                        },
-                      ),
-                      Divider(
-                        color: Colors.grey.shade200,
-                        thickness: 2,
-                        height: 0,
-                        indent: 20,
-                        endIndent: 20,
-                      ),
-                      RadioListTile<int>(
-                        activeColor: Color(0xff7f0000),
-                        value: 3,
-                        groupValue: selectedSortvalue,
-                        title: Text("Hedefine en yakın kampanyalar"),
-                        onChanged: (value){
-                          setState(() {
-                            selectedSortvalue = value!;
-                          });
-                        },
-                      ),
-                      Divider(
-                        color: Colors.grey.shade200,
-                        thickness: 2,
-                        height: 0,
-                        indent: 20,
-                        endIndent: 20,
-                      ),
-                      RadioListTile<int>(
-                        activeColor: Color(0xff7f0000),
-                        value: 4,
-                        groupValue: selectedSortvalue,
-                        title: Text("Hedefine en uzak kampanyalar"),
-                        onChanged: (value){
-                          setState(() {
-                            selectedSortvalue = value!;
-                          });
-                        },
-                      ),
+                      sortRadioListTile(campaignprovider, setState,
+                          Text("En yeni kampanyalar (varsayılan)"), 1),
+                      sortdivider(),
+                      sortRadioListTile(campaignprovider, setState,
+                          Text("En eski kampanyalar"), 2),
+                      sortdivider(),
+                      sortRadioListTile(campaignprovider, setState,
+                          Text("Hedefine en yakın kampanyalar"), 3),
+                      sortdivider(),
+                      sortRadioListTile(campaignprovider, setState,
+                          Text("Hedefine en uzak kampanyalar"), 4),
                       Spacer(),
                       Divider(
                         color: Colors.grey.shade200,
@@ -279,32 +335,31 @@ class _CampaignPageState extends State<CampaignPage> {
                         height: 50,
                         width: double.infinity,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16,vertical: 6),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                           child: ElevatedButton(
                               onPressed: () {
-                                if(selectedSortvalue==1){
-                                  Allcampaign.sort((a,b){
-                                    return a.createdDate.compareTo(b.createdDate);
-                                  });
-                                  setState((){
-                                    Allcampaign=List.from(Allcampaign);
-                                  });
+                                if (campaignprovider.selectedSortvalue == 1) {
+                                  campaignprovider.sortnewest();
+                                  Navigator.of(context).pop();
+                                } else if (campaignprovider.selectedSortvalue ==
+                                    2) {
+                                  campaignprovider.sortoldest();
+                                  Navigator.of(context).pop();
+                                } else if (campaignprovider.selectedSortvalue ==
+                                    3) {
+                                  campaignprovider.sortclosest();
+                                  Navigator.of(context).pop();
+                                } else if (campaignprovider.selectedSortvalue ==
+                                    4) {
+                                  campaignprovider.sortfurthest();
                                   Navigator.of(context).pop();
                                 }
-                                else if(selectedSortvalue==2){
-                                  Allcampaign.sort((a,b){
-                                    return b.createdDate.compareTo(a.createdDate);
-                                  });
-                                  setState((){
-                                    Allcampaign=List.from(Allcampaign);
-                                  });
-                                  Navigator.of(context).pop();
-                                }
-
-
                               },
-                              child: selectedSortvalue==lastselectedSortvalue?Text("Vazgeç"):Text("Uygula")
-                          ),
+                              child: campaignprovider.selectedSortvalue ==
+                                      campaignprovider.lastselectedSortvalue
+                                  ? Text("Vazgeç")
+                                  : Text("Uygula")),
                         ),
                       )
                     ],
@@ -312,6 +367,31 @@ class _CampaignPageState extends State<CampaignPage> {
             },
           );
         });
+  }
+
+  Divider sortdivider() {
+    return Divider(
+      color: Colors.grey.shade200,
+      thickness: 2,
+      height: 0,
+      indent: 20,
+      endIndent: 20,
+    );
+  }
+
+  RadioListTile<int> sortRadioListTile(campaignpageRepository campaignprovider,
+      StateSetter setState, Text text, int value) {
+    return RadioListTile<int>(
+      activeColor: Color(0xff7f0000),
+      value: value,
+      groupValue: campaignprovider.selectedSortvalue,
+      title: text,
+      onChanged: (value) {
+        setState(() {
+          campaignprovider.selectedSortvalue = value!;
+        });
+      },
+    );
   }
 }
 
@@ -405,7 +485,17 @@ class CampaignCard extends StatelessWidget {
                   border: Border(
                       top: BorderSide(width: 2, color: Color(0xffe6e5ea)))),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (c, a1, a2) => campaignpayPage(campaign),
+                      transitionsBuilder: (c, anim, a2, child) =>
+                          FadeTransition(opacity: anim, child: child),
+                      transitionDuration: Duration(milliseconds: 300),
+                    ),
+                  );
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yardimeliflutter/pages/LoginPage.dart';
 
 import 'Model/ModelOganization.dart';
@@ -7,7 +8,7 @@ import 'HomeScreen.dart';
 import 'pages/OrganizationPage.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData().copyWith(
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: Color(0xffededed),
         colorScheme: ThemeData().colorScheme.copyWith(primary: const Color(0xff7f0000)),
       ),
       home: const LoginPage(),
