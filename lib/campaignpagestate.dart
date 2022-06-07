@@ -12,6 +12,7 @@ class campaignpageRepository extends ChangeNotifier{
   int selectedSortvalue=1;
   int lastselectedSortvalue=1;
   List<bool> filtercategorybutton=[false,false,false];
+  List<bool> selectcategorybutton=[false,false,false];
   // final campaignApiService campaignapi;
   // campaignpageRepository(this.campaignapi);
 
@@ -61,6 +62,22 @@ class campaignpageRepository extends ChangeNotifier{
   }
   void changefiltercategory(int index){
     filtercategorybutton[index] = !filtercategorybutton[index];
+    notifyListeners();
+  }
+  void CategorySelect(int index){
+    if(selectcategorybutton[index] == true) {
+      selectcategorybutton[index] = !selectcategorybutton[index];
+    }
+    else{
+      ClearCategorySelect();
+      selectcategorybutton[index] = true;
+    }
+    notifyListeners();
+  }
+  void ClearCategorySelect(){
+    for(int i=0;i<selectcategorybutton.length;i++){
+      selectcategorybutton[i] = false;
+    }
     notifyListeners();
   }
   List<Campaign> completed(){
