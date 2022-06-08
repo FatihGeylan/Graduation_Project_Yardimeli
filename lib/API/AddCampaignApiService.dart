@@ -6,9 +6,10 @@ import 'package:yardimeliflutter/userprovider.dart';
 
 class addCampaignApiService {
 
-  Future<http.Response?> AddCampaign(Userstate userstate, String name, String description, String categoryId, int limit, String photoUrl, String city ) async {
-    try {
+  Future<http.Response?> AddCampaign(Userstate userstate,String userId, String name, String description, String categoryId, int limit, String photoUrl, String city ) async {
+
       var body = jsonEncode({
+        'userId': userId,
         'name': name,
         'description': description,
         'categoryId': categoryId,
@@ -20,14 +21,21 @@ class addCampaignApiService {
 
       http.Response response =
       await http.post(url, headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
         'Authorization':
         'Bearer ${userstate.user!.accessToken}',
       }, body: body);
 
+      if (response.statusCode == 200) {
+        // If the server did return a 201 CREATED response,
+        // then parse the JSON.
         return response;
+      } else {
+        // If the server did not return a 201 CREATED response,
+        // then throw an exception.
+        //throw Exception('Failed to create album.');
+        print(response.statusCode);
+      }
 
-    }catch (e) {
-      log(e.toString());
-    }
   }
 }
