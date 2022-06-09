@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:yardimeliflutter/animation/horizontalScrollAnimation.dart';
@@ -196,6 +197,7 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
     campaignprovider.getData();
   }
   Future<dynamic> filterBottomSheet(BuildContext context,campaignpageRepository campaignprovider) {
+    List<String> cities = ['İstanbul','Ankara','İzmir','Eskişehir','Bursa'];
     return showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -262,7 +264,6 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                                 setState((){
                                   campaignprovider.changefiltercategory(2);
                                 });
-
                               },
                               child: campaigncategorylabel(
                                 text: Text(" Sokak Hayvanları"),
@@ -270,8 +271,78 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                                 color:campaignprovider.filtercategorybutton[2]? Colors.greenAccent.shade100:Colors.white,
                                 bordercolor: campaignprovider.filtercategorybutton[2]?null:Colors.greenAccent.shade100,
                               ),
-                            )
+                            ),
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey.shade200,
+                        thickness: 2,
+                        height: 0,
+                        indent: 20,
+                        endIndent: 20,
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(left: 20, top: 8),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Şehire göre",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(left: 10, top: 8),
+                          alignment: Alignment.centerLeft,
+                          child: SingleChildScrollView(
+                             scrollDirection: Axis.vertical,
+                            physics: BouncingScrollPhysics(),
+                            child: ExpansionTile(
+                                title: Text("tüm şehirler"),
+                              children: cities.map((e) {
+                                return Container(
+                                  padding: EdgeInsets.only(left: 20, top: 16),
+                                  alignment: Alignment.centerLeft,
+                                    child: Text(e),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      //Spacer(),
+                      Divider(
+                        color: Colors.grey.shade200,
+                        thickness: 2,
+                        height: 0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
 
+                                },
+                                child: Text("Filtreleri temizle"),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async{
+                                  await campaignprovider.getData();
+                                  campaignprovider.filterbycategory();
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Uygula"),
+                              ),
+                            ),
                           ],
                         ),
                       )
@@ -459,7 +530,7 @@ class CampaignCard extends StatelessWidget {
               child: Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Mert Çelik tarafından  ●${campaign.city}",
+                  "${campaign.userName} tarafından  ●${campaign.city}",
                   style: TextStyle(
                       color: Color(0xff5e5e5e), fontWeight: FontWeight.bold),
                 ),
@@ -469,8 +540,8 @@ class CampaignCard extends StatelessWidget {
               height: 8,
             ),
             LinearPercentIndicator(
-              percent: 0.7,
-              //percent: orgmodel.data![index].currentMoney>orgmodel.data![index].limit? 1:orgmodel.data![index].currentMoney/orgmodel.data![index].limit,
+              //percent: 0.7,
+              percent: campaign.currentMoney>campaign.limit? 1:campaign.currentMoney/campaign.limit,
               progressColor: Color(0xff7f0000),
             ),
             Padding(

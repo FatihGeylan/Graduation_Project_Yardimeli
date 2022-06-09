@@ -9,6 +9,8 @@ class campaignpageRepository extends ChangeNotifier{
   List<Campaign> Allcampaign =[];
   List<Campaign> campaignsamecity=[];
   List<Campaign> completedcampaign=[];
+  List<Campaign> filteredcampaign=[];
+  List<Campaign> sortedcampaign=[];
   int selectedSortvalue=1;
   int lastselectedSortvalue=1;
   List<bool> filtercategorybutton=[false,false,false];
@@ -17,10 +19,9 @@ class campaignpageRepository extends ChangeNotifier{
   // campaignpageRepository(this.campaignapi);
 
   Future<void> getData() async {
-    orgmodel = (await campaignApiService().getUsers())!;
+    orgmodel = (await campaignApiService().getallCampaigns())!;
     //Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
-    campaignsamecity =
-        orgmodel.data!.where((element) => element.city == "Istanbul").toList();
+    campaignsamecity = orgmodel.data!.where((element) => element.city == "Istanbul").toList();
     Allcampaign=orgmodel.data!;
     Allcampaign.sort((a,b){
       return a.createdDate.compareTo(b.createdDate);
@@ -44,21 +45,27 @@ class campaignpageRepository extends ChangeNotifier{
     notifyListeners();
   }
   void sortclosest(){
-    notcompleted().sort((a, b) {
-      return (a.limit-a.currentMoney).compareTo(b.limit-b.currentMoney);
+    sortedcampaign=notcompleted();
+    Allcampaign.clear();
+    sortedcampaign.sort((a, b) {
+      return (b.currentMoney/b.limit).compareTo(a.currentMoney/a.limit);
     },);
+    Allcampaign=sortedcampaign;
     notifyListeners();
   }
   void sortfurthest(){
-    notcompleted().sort((a, b) {
-      return (b.limit-b.currentMoney).compareTo(a.limit-a.currentMoney);
+    sortedcampaign=notcompleted();
+    Allcampaign.clear();
+    sortedcampaign.sort((a, b) {
+      return  (a.currentMoney/a.limit).compareTo(b.currentMoney/b.limit);
     },);
+    Allcampaign=sortedcampaign;
     notifyListeners();
   }
   void clearlist(){
     Allcampaign.clear();
     campaignsamecity.clear();
-    notifyListeners();
+    //notifyListeners();
   }
   void changefiltercategory(int index){
     filtercategorybutton[index] = !filtercategorybutton[index];
@@ -80,11 +87,41 @@ class campaignpageRepository extends ChangeNotifier{
     }
     notifyListeners();
   }
+  void filterbycategory(){
+    filteredcampaign=Allcampaign.where((element) {
+      if(element.categoryId=="1"&&filtercategorybutton[0]){
+        return true;
+      }
+      else if(element.categoryId=="2"&&filtercategorybutton[1]){
+        return true;
+      }
+      else if(element.categoryId=="3"&&filtercategorybutton[2]){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }).toList();
+    Allcampaign.clear();
+    Allcampaign=filteredcampaign;
+    if(selectedSortvalue==1){
+      sortnewest();
+    }
+    else if(selectedSortvalue==2){
+      sortoldest();
+    }
+    else if(selectedSortvalue==3){
+      sortclosest();
+    }
+    else if(selectedSortvalue==4){
+      sortfurthest();
+    }
+  }
   List<Campaign> completed(){
-    return orgmodel.data!.where((element) => element.limit-element.currentMoney<0).toList();
+    return Allcampaign.where((element) => element.limit-element.currentMoney<0).toList();
   }
   List<Campaign> notcompleted(){
-    return orgmodel.data!.where((element) => element.limit-element.currentMoney>0).toList();
+    return Allcampaign.where((element) => element.limit-element.currentMoney>0).toList();
   }
 }
 

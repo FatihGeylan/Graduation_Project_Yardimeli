@@ -101,7 +101,7 @@ class CampaignDetailPage extends StatelessWidget {
                             child: Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                "Mert Çelik tarafından  ●${campaign.city}",
+                                "${campaign.userName} tarafından  ●${campaign.city}",
                                 style: TextStyle(
                                     color: Color(0xff5e5e5e),
                                     fontWeight: FontWeight.bold),
@@ -109,8 +109,7 @@ class CampaignDetailPage extends StatelessWidget {
                             ),
                           ),
                           LinearPercentIndicator(
-                            percent: 0.7,
-                            //percent: orgmodel.data![index].currentMoney>orgmodel.data![index].limit? 1:orgmodel.data![index].currentMoney/orgmodel.data![index].limit,
+                            percent: campaign.currentMoney>campaign.limit? 1:campaign.currentMoney/campaign.limit,
                             progressColor: Color(0xff7f0000),
                           ),
                           Container(

@@ -40,13 +40,11 @@ class Campaign {
     required this.photoUrl,
     required this.limit,
     required this.currentMoney,
-    required this.isDone,
-    required this.isVerified,
     required this.createdDate,
     required this.city,
-    required this.isRejected,
     required this.categoryId,
     required this.userId,
+    required this.userName
   });
 
   String id;
@@ -55,13 +53,11 @@ class Campaign {
   String photoUrl;
   double limit;
   double currentMoney;
-  bool isDone;
-  bool isVerified;
   DateTime createdDate;
   String city;
-  bool isRejected;
   String categoryId;
   String userId;
+  String userName;
 
   factory Campaign.fromJson(Map<String, dynamic> json) => Campaign(
     id: json["id"],
@@ -70,13 +66,11 @@ class Campaign {
     photoUrl: json["photoUrl"],
     limit: json["limit"],
     currentMoney: json["currentMoney"],
-    isDone: json["isDone"],
-    isVerified: json["isVerified"],
     createdDate: DateTime.parse(json["createdDate"]),
     city: json["city"],
-    isRejected: json["isRejected"],
     categoryId: json["categoryId"],
     userId: json["userId"],
+    userName: json["userName"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -86,12 +80,10 @@ class Campaign {
     "photoUrl": photoUrl,
     "limit": limit,
     "currentMoney": currentMoney,
-    "isDone": isDone,
-    "isVerified": isVerified,
     "createdDate": createdDate.toIso8601String(),
     "city": city,
-    "isRejected": isRejected,
     "categoryId": categoryId,
     "userId": userId,
+    "userName":userName,
   };
 }
