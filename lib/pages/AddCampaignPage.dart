@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yardimeliflutter/API/AddCampaignApiService.dart';
 import 'package:yardimeliflutter/Model/ModelCampaign.dart';
-import 'package:yardimeliflutter/userprovider.dart';
+import 'package:yardimeliflutter/authprovider.dart';
 
 import '../HomeScreen.dart';
 import '../campaignpagestate.dart';
@@ -39,7 +39,7 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
 
 
     // String dropdownValue = 'Şehrinizi Seçiniz.';
-    final userprovider = ref.watch(userProvider);
+    final authprovider = ref.watch(authProvider);
     final campaignprovider = ref.watch(campaignpageProvider);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -342,7 +342,7 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
                           if (_formKey2.currentState!.validate()) {
                             try {
                               var req = await _addCampaignAPI.AddCampaign(
-                                userprovider,
+                                authprovider,
                                 '3',
                                 _campaignNameController.text,
                                 _campaignDescriptionController.text,

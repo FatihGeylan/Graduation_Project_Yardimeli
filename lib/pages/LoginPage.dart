@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yardimeliflutter/Model/ModelUser.dart';
+import 'package:yardimeliflutter/Model/ModelAuth.dart';
 import 'package:yardimeliflutter/HomeScreen.dart';
 
 import '../API/AuthAPI.dart';
-import '../userprovider.dart';
+import '../authprovider.dart';
 
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -27,7 +27,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final userprovider = ref.watch(userProvider);
+    final authprovider = ref.watch(authProvider);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -107,8 +107,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     _authAPI.login(_emailController.text,  _passwordController.text);
                                     if(req.statusCode == 200){
                                       print(req.body);
-                                      userprovider.user =
-                                      User.fromReqBody(req.body);
+                                      authprovider.auth =
+                                      Auth.fromReqBody(req.body);
                                       //user.printAttributes();
                                       _gotoHomeScreen(context);
                                     } else {

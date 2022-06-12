@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:yardimeliflutter/API/ConstantAddCampaign.dart';
-import 'package:yardimeliflutter/userprovider.dart';
+import 'package:yardimeliflutter/authprovider.dart';
 
 class addCampaignApiService {
 
-  Future<http.Response?> AddCampaign(Userstate userstate,String userId, String name, String description, String categoryId, int limit, String photoUrl, String city ) async {
+  Future<http.Response?> AddCampaign(Authstate authstate,String userId, String name, String description, String categoryId, int limit, String photoUrl, String city ) async {
 
       var body = jsonEncode({
         'userId': userId,
@@ -23,7 +23,7 @@ class addCampaignApiService {
       await http.post(url, headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization':
-        'Bearer ${userstate.user!.accessToken}',
+        'Bearer ${authstate.auth!.accessToken}',
       }, body: body);
 
       if (response.statusCode == 200) {
