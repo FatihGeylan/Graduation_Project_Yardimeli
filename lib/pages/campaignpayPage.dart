@@ -5,7 +5,7 @@ import 'package:yardimeliflutter/Model/ModelCampaign.dart';
 
 import '../API/paytocampaignApiService.dart';
 import '../animation/horizontalScrollAnimation.dart';
-import '../userprovider.dart';
+import '../authprovider.dart';
 
 class campaignpayPage extends ConsumerStatefulWidget {
   final Campaign campaign;
@@ -28,7 +28,7 @@ class _campaignpayPageState extends ConsumerState<campaignpayPage> {
 
   @override
   Widget build(BuildContext context) {
-    final userprovider = ref.watch(userProvider);
+    final authprovider = ref.watch(authProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -189,7 +189,7 @@ class _campaignpayPageState extends ConsumerState<campaignpayPage> {
                     width: double.infinity,
                     padding: EdgeInsets.only(left: 12,right: 12,bottom: 30),
                     child: ElevatedButton(onPressed: () async{
-                      var req= await payApi.paytocampaign(userprovider, widget.campaign.id, paycontoller.text);
+                      var req= await payApi.paytocampaign(authprovider, widget.campaign.id, paycontoller.text);
                       print(req);
                     },
                         child: Text("Bağışta bulun"),

@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import '../userprovider.dart';
+import '../authprovider.dart';
 import 'paytocampaignConstant.dart';
 import 'ConstantCampaign.dart';
 
 class paytocampaignApi {
-  Future<bool?> paytocampaign(Userstate userstate,String campaignId,String price) async {
+  Future<bool?> paytocampaign(Authstate authstate,String campaignId,String price) async {
     final queryParameters = {
       'campaignId': campaignId,
       'price': price,
@@ -18,7 +18,7 @@ class paytocampaignApi {
           url,
         headers: {
           'Authorization':
-          'Bearer ${userstate.user!.accessToken}',
+          'Bearer ${authstate.auth!.accessToken}',
         },
       );
       if (response.statusCode == 200) {
