@@ -311,22 +311,29 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                       //Color(0xff7f0000)
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.only(left: 10, top: 4,bottom: 4),
+                          padding: EdgeInsets.only(left: 10, top: 4,bottom: 4,right: 10),
                           alignment: Alignment.topCenter,
                           child: ListView.builder(
                             itemCount: cities.length,
                               itemBuilder: (_,i){
-                                return ListTile(
-                                  tileColor: _selected[i]?Color(0xff7f0000):null,
-                                  onTap: () {
-                                    setState((){
-                                      _selected[lastselected]=false;
-                                      _selected[i]=!_selected[i];
-                                      lastselected=i;
-
-                                    });
-                                  },
-                                  title: Text(cities[i]),
+                                return Container(
+                                  color:_selected[i]?Color(0xff7f0000):null,
+                                  child: ListTile(
+                                    //tileColor: _selected[i]?Color(0xff7f0000):null,
+                                    onTap: () {
+                                      setState((){
+                                        _selected[lastselected]=false;
+                                        _selected[i]=!_selected[i];
+                                        lastselected=i;
+                                      });
+                                    },
+                                    title: Text(
+                                        cities[i],
+                                      style: TextStyle(
+                                        color: _selected[i]?Colors.white:null,
+                                      ),
+                                    ),
+                                  ),
                                 );
                               }
                           ),
