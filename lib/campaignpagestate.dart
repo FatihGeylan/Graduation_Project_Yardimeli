@@ -24,7 +24,7 @@ class campaignpageRepository extends ChangeNotifier{
     campaignsamecity = orgmodel.data!.where((element) => element.city == "Istanbul").toList();
     Allcampaign=orgmodel.data!;
     Allcampaign.sort((a,b){
-      return a.createdDate.compareTo(b.createdDate);
+      return b.createdDate.compareTo(a.createdDate);
     });
     notifyListeners();
   }
@@ -34,13 +34,13 @@ class campaignpageRepository extends ChangeNotifier{
   }
   void sortnewest(){
     Allcampaign.sort((a,b){
-      return a.createdDate.compareTo(b.createdDate);
+      return b.createdDate.compareTo(a.createdDate);
     });
     notifyListeners();
   }
   void sortoldest(){
     Allcampaign.sort((a,b){
-      return b.createdDate.compareTo(a.createdDate);
+      return a.createdDate.compareTo(b.createdDate);
     });
     notifyListeners();
   }
