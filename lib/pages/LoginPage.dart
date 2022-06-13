@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yardimeliflutter/Model/ModelAuth.dart';
@@ -101,19 +103,58 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           child: ElevatedButton(
                             onPressed:() async{
                               {
+                                showDialog<void>(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return Padding(
+                                        padding: EdgeInsets.only(left: 130 , right: 130),
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        )
+                                    );
+                                  },
+                                );
                                 if(_formKey.currentState!.validate()){
                                   try{
                                     var req = await
                                     _authAPI.login(_emailController.text,  _passwordController.text);
-                                    if(req.statusCode == 200){
+                                    Navigator.pop(context);
+                                    var decoded=json.decode(req.body);
+                                    if (decoded['resultStatus']  == 0) {
                                       print(req.body);
                                       authprovider.auth =
                                       Auth.fromReqBody(req.body);
                                       //user.printAttributes();
                                       _gotoHomeScreen(context);
-                                    } else {
-                                      print('Hatalı giriş falan');
                                     }
+                                    else{
+                                      showDialog(
+                                        context: context,
+                                        builder: (context)=>AlertDialog(
+                                          content: Text("Kullanıcı adı veya şifre hatalı"),
+                                          actions: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text("kapat")
+                                            )],
+                                          elevation: 10,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                        ),
+                                      );
+                                      //print('Hatalı giriş falan');
+                                    }
+                                    // if(req.statusCode == 200){
+                                    //   print(req.body);
+                                    //   userprovider.user =
+                                    //   User.fromReqBody(req.body);
+                                    //   //user.printAttributes();
+                                    //   _gotoHomeScreen(context);
+                                    // } else {
+                                    //   print('Hatalı giriş falan');
+                                    // }
                                   } on Exception catch (e){
                                     print(e.toString());
                                     // pushError(context);

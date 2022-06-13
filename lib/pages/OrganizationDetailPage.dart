@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yardimeliflutter/Model/ModelOganization.dart';
+import 'package:yardimeliflutter/pages/payPage.dart';
 
 class OrganizationDetailPage extends StatelessWidget {
   final Organization organization;
@@ -86,7 +87,21 @@ class OrganizationDetailPage extends StatelessWidget {
                             border: Border(
                                 top: BorderSide(width: 2, color: Color(0xffe6e5ea)))),
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (c, a1, a2) =>
+                                    payPage.organization(
+                                        organization),
+                                transitionsBuilder: (c, anim, a2, child) =>
+                                    FadeTransition(
+                                        opacity: anim, child: child),
+                                transitionDuration:
+                                Duration(milliseconds: 300),
+                              ),
+                            );
+                          },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

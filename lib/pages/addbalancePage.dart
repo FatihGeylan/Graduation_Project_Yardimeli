@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yardimeliflutter/API/addbalanceApiService.dart';
+import 'package:yardimeliflutter/authprovider.dart';
+
 
 class addbalacePage extends ConsumerStatefulWidget {
   const addbalacePage({Key? key}) : super(key: key);
@@ -11,6 +14,7 @@ class addbalacePage extends ConsumerStatefulWidget {
 }
 
 class _addbalacePageState extends ConsumerState<addbalacePage> {
+  addbalanceApi addbalance =addbalanceApi();
   final paycontoller=TextEditingController();
   void dispose() {
     paycontoller.dispose();
@@ -18,6 +22,7 @@ class _addbalacePageState extends ConsumerState<addbalacePage> {
   }
   @override
   Widget build(BuildContext context) {
+    final userprovider = ref.watch(authProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -94,79 +99,153 @@ class _addbalacePageState extends ConsumerState<addbalacePage> {
           Expanded(
             child: Container(
               color: Colors.white,
-              child: Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            child: Text(
-                                "Cüzdanınıza yüklemek istediğiniz tutarı giriniz."
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: Text(
+                              "Cüzdanınıza yüklemek istediğiniz tutarı giriniz."
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 16,horizontal: 12),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                child: IconButton( onPressed: () {
+                                  paycontoller.text="";
+                                }, icon: Icon(Icons.close),),
                             ),
-                            padding: EdgeInsets.symmetric(vertical: 16,horizontal: 12),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                  child: IconButton( onPressed: () {
-                                    paycontoller.text="";
-                                  }, icon: Icon(Icons.close),),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 0),
-                                  width: 60,
-                                  child: TextField(
-                                    inputFormatters: <TextInputFormatter>[
-                                      FilteringTextInputFormatter.allow(RegExp(r'^[1-9][0-9]*')),
-                                    ],
-                                    decoration:  InputDecoration(
-                                      border:  OutlineInputBorder(),
-                                      contentPadding: EdgeInsets.zero
-                                    ),
-
-                                    textAlign: TextAlign.center,
-                                    keyboardType: TextInputType.number,
-                                    controller: paycontoller,
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                    ),
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 0),
+                                width: 60,
+                                child: TextField(
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.allow(RegExp(r'^[1-9][0-9]*')),
+                                  ],
+                                  decoration:  InputDecoration(
+                                    border:  OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.zero
                                   ),
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                                child: Text(
-                                  "₺",
+
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  controller: paycontoller,
                                   style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff7f0000),
+                                    fontSize: 22,
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                          Spacer(),
-                          Container(
-                            height: 75,
-                            width: double.infinity,
-                            padding: EdgeInsets.only(left: 12,right: 12,bottom: 30),
-                            child: ElevatedButton(
-                              onPressed: () {
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                "₺",
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff7f0000),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        Spacer(),
+                        Container(
+                          height: 75,
+                          width: double.infinity,
+                          padding: EdgeInsets.only(left: 12,right: 12,bottom: 30),
+                          child: ElevatedButton(
+                            onPressed: () async{
+                              if(paycontoller.text!="" ){
+                                showDialog(
+                                  context: context,
+                                  builder: (context)=>AlertDialog(
+                                    content: Text("${paycontoller.text} ₺ tutarında cüzdana para yüklenecektir."),
+                                    actions: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("İptal et")),
+                                      ElevatedButton(
+                                          onPressed: () async{
+                                            var req= await addbalance.addbalance(userprovider, paycontoller.text);
+                                            Navigator.pop(context);
+                                            if(!req){
+                                              showDialog(
+                                                context: context,
+                                                builder: (context)=>AlertDialog(
+                                                  content: Text("HATA bakiye yüklenemedi"),
+                                                  actions: [
+                                                    ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text("kapat")
+                                                    )],
+                                                  elevation: 10,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                                ),
+                                              );
+                                            }
+                                            else{
+                                              showDialog(
+                                                context: context,
+                                                builder: (context)=>AlertDialog(
+                                                  content: Text("Bakiye başarıyla yüklendi"),
+                                                  actions: [
+                                                    ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text("kapat")
+                                                    )],
+                                                  elevation: 10,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: Text("Bakiye yükle")),
+                                    ],
+                                    elevation: 10,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                  ),
+                                );
+                              }
+                              else{
+                                showDialog(
+                                  context: context,
+                                  builder: (context)=>AlertDialog(
+                                    content: Text("Lütfen tutar giriniz"),
+                                    actions: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("kapat")
+                                      )],
+                                    elevation: 10,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                  ),
+                                );
 
-                              },
-                              child: Text("Bakiye yükle"),),
-                          )
+                              }
 
-                        ],
-                      ),
+
+                            },
+                            child: Text("Bakiye yükle"),),
+                        )
+
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

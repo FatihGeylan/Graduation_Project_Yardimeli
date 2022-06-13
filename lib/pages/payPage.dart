@@ -2,22 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yardimeliflutter/Model/ModelCampaign.dart';
+import 'package:yardimeliflutter/Model/ModelOganization.dart';
 import 'package:yardimeliflutter/pages/addbalancePage.dart';
 import 'package:flutter/services.dart';
-import '../API/paytocampaignApiService.dart';
+import '../API/payApiService.dart';
 import '../animation/horizontalScrollAnimation.dart';
 import '../authprovider.dart';
 
-class campaignpayPage extends ConsumerStatefulWidget {
-  final Campaign campaign;
-  const campaignpayPage(this.campaign,{Key? key}) : super(key: key);
+class payPage extends ConsumerStatefulWidget {
+   Campaign? campaign;
+   Organization? organization;
+   payPage({Key? key}) : super(key: key);
 
+  payPage.organization(Organization organization){
+    this.organization=organization;
+    this.campaign=null;
+
+  }
+  payPage.campaign(Campaign campaign){
+    this.campaign= campaign;
+    this.organization=null;
+  }
   @override
   _campaignpayPageState createState() => _campaignpayPageState();
 }
 
-class _campaignpayPageState extends ConsumerState<campaignpayPage> {
-  paytocampaignApi payApi=paytocampaignApi();
+class _campaignpayPageState extends ConsumerState<payPage> {
+  payApi payapi=payApi();
 
   final paycontoller=TextEditingController();
 
@@ -145,19 +156,14 @@ class _campaignpayPageState extends ConsumerState<campaignpayPage> {
                   Container(
                     padding: EdgeInsets.all(8),
                     child: horizontalSrollAnimation(
-                        animationtext: Text(
-                          widget.campaign.name,
-                          style: const TextStyle(
-                            fontSize: 30,
-                          ),
-                        )),
+                        animationtext: widget.campaign==null? organizationnametext():campaignnametext()),
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 8,right: 8,bottom: 8),
-                    child: Text(
-                      "${widget.campaign.limit} ₺ hedefin ${widget.campaign.currentMoney} ₺'si toplandı.",
+                    child: widget.campaign!=null?Text(
+                      "${widget.campaign!.limit} ₺ hedefin ${widget.campaign!.currentMoney} ₺'si toplandı.",
                       style: TextStyle(color: Color(0xff5e5e5e)),
-                    ),
+                    ):null,
                   ),
                   Divider(
                     color: Colors.grey.shade300,
@@ -215,8 +221,49 @@ class _campaignpayPageState extends ConsumerState<campaignpayPage> {
                                   child: Text("İptal et")),
                               ElevatedButton(
                                   onPressed: () async{
-                                    var req= await payApi.paytocampaign(userprovider, widget.campaign.id, paycontoller.text);
+                                    var req;
+                                    if(widget.campaign!=null){
+                                       req= await payapi.paytocampaign(authprovider, widget.campaign!.id, paycontoller.text);
+                                    }
+                                    else{
+                                       req= await payapi.paytoorganization(authprovider, widget.organization!.id, paycontoller.text);
+                                    }
+
                                     Navigator.pop(context);
+                                    if(!req){
+                                      showDialog(
+                                        context: context,
+                                        builder: (context)=>AlertDialog(
+                                          content: Text("Hata bağış gerçekleşmedi"),
+                                          actions: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text("kapat")
+                                            )],
+                                          elevation: 10,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                        ),
+                                      );
+                                    }
+                                    else{
+                                      showDialog(
+                                        context: context,
+                                        builder: (context)=>AlertDialog(
+                                          content: Text("Bağışınız için teşekkürler"),
+                                          actions: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text("kapat")
+                                            )],
+                                          elevation: 10,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: Text("Bağışta bulun")),
                             ],
@@ -243,9 +290,6 @@ class _campaignpayPageState extends ConsumerState<campaignpayPage> {
                         );
 
                       }
-                    child: ElevatedButton(onPressed: () async{
-                      var req= await payApi.paytocampaign(authprovider, widget.campaign.id, paycontoller.text);
-                      print(req);
                     },
                         child: Text("Bağışta bulun"),
                     ),
@@ -256,6 +300,23 @@ class _campaignpayPageState extends ConsumerState<campaignpayPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Text campaignnametext() {
+    return Text(
+      widget.campaign!.name,
+      style: const TextStyle(
+        fontSize: 30,
+      ),
+    );
+  }
+  Text organizationnametext() {
+    return Text(
+      widget.organization!.name,
+      style: const TextStyle(
+        fontSize: 30,
       ),
     );
   }

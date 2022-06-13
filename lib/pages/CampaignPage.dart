@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:yardimeliflutter/animation/horizontalScrollAnimation.dart';
 import 'package:yardimeliflutter/campaignpagestate.dart';
-import 'package:yardimeliflutter/pages/campaignpayPage.dart';
+import 'package:yardimeliflutter/pages/payPage.dart';
 import '../Model/ModelCampaign.dart';
 import 'CampaignDetailPage.dart';
 
@@ -36,6 +36,7 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
               refresh(campaignprovider);
             },
             child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -104,7 +105,7 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 290,
+                      height: 270,
                       child: ListView.builder(
                         physics: ClampingScrollPhysics(),
                         itemCount: campaignprovider.campaignsamecity.length,
@@ -197,7 +198,19 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
     campaignprovider.getData();
   }
   Future<dynamic> filterBottomSheet(BuildContext context,campaignpageRepository campaignprovider) {
-    List<String> cities = ['İstanbul','Ankara','İzmir','Eskişehir','Bursa'];
+    List<String> cities = ['01  Adana','02  Adıyaman','03  Afyon','04  Ağrı','05  Amasya','06 Ankara','07 Antalya','08 Artvin','09 Aydın','10 Balıkesir',
+      '11 Bilecik','12 Bingöl','13 Bitlis','14 Bolu','15 Burdur', '16 Bursa','17 Çanakkale	','18 Çankırı	','19 Çorum	','20 Denizli	',
+      '21 Diyarbakır	','22 Edirne	','23 Elazığ	','24 Erzincan	','25 Erzurum	','26 Eskişehir	','27 Gaziantep	','28 Giresun	','29 Gümüşhane	','30 Hakkari	',
+      '31 Hatay	','32 Isparta	','33 Mersin	','34 İstanbul	','35 İzmir	','36 Kars	','37 Kastamonu	','38 Kayseri	','39 Kırklareli	','40 Kırşehir	',
+      '41 Kocaeli	','42 Konya	','43 Kütahya	','44 Malatya	','45 Manisa	','46 Kahramanmaraş	','47 Mardin	','48 Muğla	','49 Muş	','50 Nevşehir	',
+      '51 Niğde	','52 Ordu	','53 Rize	','54 Sakarya	','55 Samsun	','56 Siirt	','57 Sinop	','58 Sivas	','59 Tekirdağ	','60 Tokat	',
+      '61 Trabzon	','62 Tunceli	','63 Şanlıurfa	','64 Uşak	','65 Van	','66 Yozgat	','67 Zonguldak	','68 Aksaray	','69 Bayburt	','70 Karaman	',
+      '71 Kırıkkale	','72 Batman	','73 Şırnak	','74 Bartın	','75 Ardahan	','76 Iğdır	','77 Yalova	','78 Karabük	','79 Kilis	','80 Osmaniye	',
+      '81 Düzce	',
+    ];
+    bool hover=false;
+    int lastselected =1;
+    final List<bool> _selected = List.generate(81, (i) => false);
     return showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -210,6 +223,7 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                   height: MediaQuery.of(context).size.height * .60,
                   padding: EdgeInsets.only(top: 12),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Divider(
                         color: Colors.grey.shade300,
@@ -219,6 +233,7 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                         endIndent: 175,
                       ),
                       Container(
+                        height: 30,
                         padding: EdgeInsets.only(left: 20, top: 8),
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -228,6 +243,7 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                         ),
                       ),
                       Container(
+                        height: 50,
                         padding: EdgeInsets.only(left: 10, top: 8),
                         alignment: Alignment.centerLeft,
                         child: Row(
@@ -283,6 +299,7 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                         endIndent: 20,
                       ),
                       Container(
+                        height: 30,
                         padding: EdgeInsets.only(left: 20, top: 8),
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -291,23 +308,27 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                       ),
+                      //Color(0xff7f0000)
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.only(left: 10, top: 8),
-                          alignment: Alignment.centerLeft,
-                          child: SingleChildScrollView(
-                             scrollDirection: Axis.vertical,
-                            physics: BouncingScrollPhysics(),
-                            child: ExpansionTile(
-                                title: Text("tüm şehirler"),
-                              children: cities.map((e) {
-                                return Container(
-                                  padding: EdgeInsets.only(left: 20, top: 16),
-                                  alignment: Alignment.centerLeft,
-                                    child: Text(e),
+                          padding: EdgeInsets.only(left: 10, top: 4,bottom: 4),
+                          alignment: Alignment.topCenter,
+                          child: ListView.builder(
+                            itemCount: cities.length,
+                              itemBuilder: (_,i){
+                                return ListTile(
+                                  tileColor: _selected[i]?Color(0xff7f0000):null,
+                                  onTap: () {
+                                    setState((){
+                                      _selected[lastselected]=false;
+                                      _selected[i]=!_selected[i];
+                                      lastselected=i;
+
+                                    });
+                                  },
+                                  title: Text(cities[i]),
                                 );
-                              }).toList(),
-                            ),
+                              }
                           ),
                         ),
                       ),
@@ -317,7 +338,9 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                         thickness: 2,
                         height: 0,
                       ),
-                      Padding(
+                      Container(
+                        height: 60,
+                        alignment: Alignment.bottomCenter,
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           //mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -485,7 +508,7 @@ class CampaignCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.all(16),
       child: Container(
-        height: 255,
+        height: 240,
         width: 360,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -500,7 +523,7 @@ class CampaignCard extends StatelessWidget {
                 tag: "orgpic" + campaign.name + axis,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 100,
+                  height: 80,
                   decoration: BoxDecoration(
                     borderRadius:
                         BorderRadius.vertical(top: Radius.circular(20)),
@@ -560,7 +583,7 @@ class CampaignCard extends StatelessWidget {
                   Navigator.push(
                     context,
                     PageRouteBuilder(
-                      pageBuilder: (c, a1, a2) => campaignpayPage(campaign),
+                      pageBuilder: (c, a1, a2) => payPage.campaign(campaign),
                       transitionsBuilder: (c, anim, a2, child) =>
                           FadeTransition(opacity: anim, child: child),
                       transitionDuration: Duration(milliseconds: 300),

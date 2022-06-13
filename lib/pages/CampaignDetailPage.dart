@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:yardimeliflutter/Model/ModelOganization.dart';
 import 'package:yardimeliflutter/animation/horizontalScrollAnimation.dart';
-import 'package:yardimeliflutter/pages/campaignpayPage.dart';
+import 'package:yardimeliflutter/pages/payPage.dart';
 
 import '../Model/ModelCampaign.dart';
 import '../my_flutter_app_icons.dart';
@@ -148,7 +148,7 @@ class CampaignDetailPage extends StatelessWidget {
                                   context,
                                   PageRouteBuilder(
                                     pageBuilder: (c, a1, a2) =>
-                                        campaignpayPage(
+                                        payPage.campaign(
                                             campaign),
                                     transitionsBuilder: (c, anim, a2, child) =>
                                         FadeTransition(
