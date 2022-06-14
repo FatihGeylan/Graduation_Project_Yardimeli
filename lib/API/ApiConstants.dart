@@ -5,4 +5,8 @@ class ApiConstants {
   static String PayToCampaign = '/api/Campaign/PayToCampaign';
   static String GetOrganizations = '/api/Organizations/GetOrganizations';
   static String DonateToOrganization = '/api/Organizations/DonateToOrganization';
+  static String CreateToken = '/api/Auth/CreateToken';
+  static String AddCampaign = '/api/Campaign/AddCampaign';
+  static String GetUserByUserName =  '/api/User/GetUserByUserName';
+
 }

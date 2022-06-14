@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
-import 'package:yardimeliflutter/API/ConstantAddCampaign.dart';
+import 'package:yardimeliflutter/API/ApiConstants.dart';
 import 'package:yardimeliflutter/authprovider.dart';
 
 class addCampaignApiService {
@@ -17,7 +17,7 @@ class addCampaignApiService {
         'photoUrl': photoUrl,
         'city': city,
       });
-      var url = Uri.parse(AddCampaignConstant.api);
+      var url = Uri.parse(ApiConstants.baseUrl+ ApiConstants.AddCampaign);
 
       http.Response response =
       await http.post(url, headers: {

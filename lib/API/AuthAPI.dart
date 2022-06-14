@@ -1,42 +1,19 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
-import 'ConstantsAuth.dart';
+import 'package:yardimeliflutter/API/ApiConstants.dart';
 
 class AuthAPI {
-  // Future<http.Response> signUp(String email, String password,) async {
-  //   var body = jsonEncode({
-  //     'customer': {
-  //       'email': email,
-  //       'password': password,
-  //     }
-  //   });
-  //
-  //   http.Response response =
-  //   await http.post(super.customersPath, headers: super.headers, body: body);
-  //   return response;
-  // }
 
   Future<http.Response> login(String email, String password) async {
+
     var body = jsonEncode({'email': email, 'password': password});
-    var url = Uri.parse(UserConstant.api);
-
-
+    var url = Uri.parse(ApiConstants.baseUrl+ApiConstants.CreateToken);
 
     http.Response response =
-    await http.post(url,headers: UserConstant().headers , body: body);
+    await http.post(url,headers: {'Content-Type': 'application/json; charset=UTF-8'} , body: body);
 
     return response;
   }
-
-
-  // Future<http.Response> logout(int id, String token) async {
-  //   var body = jsonEncode({'id': id, 'token': token});
-  //
-  //   http.Response response = await http.post(super.logoutPath,
-  //       headers: super.headers, body: body);
-  //
-  //   return response;
-  // }
 
 }
