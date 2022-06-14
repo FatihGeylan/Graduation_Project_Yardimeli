@@ -7,6 +7,7 @@ import 'package:yardimeliflutter/HomeScreen.dart';
 
 import '../API/AuthAPI.dart';
 import '../authprovider.dart';
+import 'CreateUserPage.dart';
 
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -67,13 +68,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           controller: _emailController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter some text';
+                              return 'Lütfen mail adresinizi girin..';
                             }
                             return null;
                           },
                           decoration: const InputDecoration(
-                              hintText: 'Type your mail',
-                              labelText: 'example@gmail.com'),
+                              hintText: 'Mail Adresinizi Giriniz..',
+                              labelText: 'ornek@gmail.com'),
                         ),
                         SizedBox(
                           height: 25,
@@ -82,7 +83,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           controller: _passwordController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter some text';
+                              return 'Lütfen Şifre Giriniz';
                             }
                             return null;
                           },
@@ -91,7 +92,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           },
                           obscureText: true,
                           decoration: const InputDecoration(
-                            hintText: 'Type your password',
+                            hintText: 'Şifre giriniz..',
                           ),
                         ),
                         SizedBox(
@@ -161,7 +162,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   }
                                 }
                               }
-                            }, child: Text('Sign in'),
+                            }, child: Text('Giriş Yap'),
                           ),
                         ),
                         SizedBox(
@@ -172,9 +173,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           width: MediaQuery.of(context).size.height/5,
                           child: ElevatedButton(
                               onPressed: () {
-                                //_gotoCreateUser(context);
+                                _gotoCreateUserPage(context);
                               },
-                              child: const Text('Create New User')
+                              child: const Text('Kullanıcı Oluştur')
 
                           ),
                         ),
@@ -187,7 +188,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           child: ElevatedButton(onPressed: () {
                             _gotoHomeScreen(context);
                           },
-                              child: Text('Giris')),
+                              child: Text('TEST')),
                         ),
                         SizedBox(height: 25),
 
@@ -208,6 +209,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => HomeScreen()),
+          (Route<dynamic> route) => false,
+    );
+  }
+  void _gotoCreateUserPage(BuildContext context){
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => CreateUserPage()),
           (Route<dynamic> route) => false,
     );
   }

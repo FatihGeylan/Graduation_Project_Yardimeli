@@ -31,7 +31,16 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
   var seen = Set<String>();
   Future<Campaign>? _futureCampaign;
 
-  List<String> cities = ['İstanbul','Ankara','İzmir','Eskişehir','Bursa'];
+  List<String> cities = ['Adana','Adıyaman','Afyon','Ağrı','Amasya','Ankara','Antalya','Artvin','Aydın','Balıkesir',
+    'Bilecik','Bingöl','Bitlis','Bolu','Burdur', 'Bursa','Çanakkale','Çankırı','Çorum','Denizli',
+    'Diyarbakır','Edirne','Elazığ','Erzincan','Erzurum','Eskişehir','Gaziantep','Giresun','Gümüşhane','Hakkari',
+    'Hatay','Isparta','Mersin','İstanbul','İzmir','Kars','Kastamonu','Kayseri','Kırklareli','Kırşehir',
+    'Kocaeli','Konya','Kütahya','Malatya','Manisa','Kahramanmaraş','Mardin','Muğla','Muş','Nevşehir',
+    'Niğde','Ordu','Rize','Sakarya','Samsun','Siirt','Sinop','Sivas','Tekirdağ','Tokat',
+    'Trabzon','Tunceli','Şanlıurfa','Uşak','Van','Yozgat','Zonguldak','Aksaray','Bayburt','Karaman',
+    'Kırıkkale','Batman','Şırnak','Bartın','Ardahan','Iğdır','Yalova','Karabük','Kilis','Osmaniye',
+    'Düzce',
+  ];
   // List<String> uniquelist = cities.where((country) => seen.add(country)).toList();
 
   @override
@@ -343,7 +352,6 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
                             try {
                               var req = await _addCampaignAPI.AddCampaign(
                                 authprovider,
-                                '3',
                                 _campaignNameController.text,
                                 _campaignDescriptionController.text,
                                 selectedCategoryID.toString(),

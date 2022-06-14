@@ -6,10 +6,9 @@ import 'package:yardimeliflutter/authprovider.dart';
 
 class addCampaignApiService {
 
-  Future<http.Response?> AddCampaign(Authstate authstate,String userId, String name, String description, String categoryId, int limit, String photoUrl, String city ) async {
+  Future<http.Response?> AddCampaign(Authstate authstate, String name, String description, String categoryId, int limit, String photoUrl, String city ) async {
 
       var body = jsonEncode({
-        'userId': userId,
         'name': name,
         'description': description,
         'categoryId': categoryId,

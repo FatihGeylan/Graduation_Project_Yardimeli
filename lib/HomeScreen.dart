@@ -18,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
     OrganizationPage(),
     ProfilePage()
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
