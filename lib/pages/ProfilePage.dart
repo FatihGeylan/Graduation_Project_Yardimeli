@@ -27,15 +27,18 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     final userprovider = ref.watch(userProvider);
     ref.read(userProvider).getUser(authprovider);
     return Scaffold(
-        body: userprovider.user.UserName == ''
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : RefreshIndicator(
-                onRefresh: () async {
-                  ref.read(userProvider).getUser(authprovider);
-                },
-                child: Column(
+        body:
+        // userprovider.user == null ||
+        // userprovider.user.isEmpty
+        //     ? const Center(
+        //         child: CircularProgressIndicator(),
+        //       )
+        //     : RefreshIndicator(
+        //         onRefresh: () async {
+        //           ref.read(userProvider).getUser(authprovider);
+        //         },
+        //         child:
+                Column(
                   children: [
                     Expanded(
                       flex: 1,
@@ -70,7 +73,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                               color: Color(0xff7f0000)),
                                         ),
                                         TextSpan(
-                                            text: userprovider.user.UserName,
+                                            text: 'Kullanıcı Adı',
                                             style: TextStyle(
                                               fontSize: 25,
                                               color: Color(0xff7f0000),
@@ -188,7 +191,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     ),
                   ],
                 ),
-              ));
+              );
   }
 
   void _myCampaignsPage(BuildContext context) {

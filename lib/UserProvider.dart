@@ -7,7 +7,7 @@ import 'package:yardimeliflutter/authprovider.dart';
 class UserRepository extends ChangeNotifier{
 
   Usermodel usermodel = new Usermodel();
-  User user = new User(Id: '', Email: '', UserName: '', City: '', Balance: -1, FirstName: '', LastName: '');
+  List<User> user =[];
 
   Future<void> getUser(Authstate authstate) async {
     usermodel = (await userApiService().getUser(authstate))!;

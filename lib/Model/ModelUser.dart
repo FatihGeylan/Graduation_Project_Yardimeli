@@ -16,18 +16,18 @@ class Usermodel {
 
   int? resultStatus;
   dynamic message;
-  User? data;
+  List<User>? data;
 
   factory Usermodel.fromJson(Map<String, dynamic> json) => Usermodel(
     resultStatus: json["resultStatus"],
     message: json["message"],
-    data: json["data"].fromJson,
+    data: List<User>.from(json["data"].map((x) => User.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "resultStatus": resultStatus,
     "message": message,
-    "data": data!.toJson()
+    "data": List<dynamic>.from(data!.map((x) => x.toJson())),
   };
 }
 

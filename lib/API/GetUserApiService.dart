@@ -7,7 +7,6 @@ import 'package:yardimeliflutter/Model/ModelUser.dart';
 import 'package:yardimeliflutter/authprovider.dart';
 
 import 'ApiConstants.dart';
-import '../Model/ModelCampaign.dart';
 
 class userApiService {
   Future<Usermodel?> getUser(Authstate authstate) async {
