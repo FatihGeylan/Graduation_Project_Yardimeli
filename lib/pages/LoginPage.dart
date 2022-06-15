@@ -123,7 +123,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     Navigator.pop(context);
                                     var decoded=json.decode(req.body);
                                     if (decoded['resultStatus']  == 0) {
-                                      print(req.body);
+                                      //print(req.body);
                                       authprovider.auth =
                                       Auth.fromReqBody(req.body);
                                       //user.printAttributes();

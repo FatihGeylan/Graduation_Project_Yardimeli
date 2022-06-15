@@ -15,6 +15,10 @@ class campaignpageRepository extends ChangeNotifier{
   int lastselectedSortvalue=1;
   List<bool> filtercategorybutton=[false,false,false];
   List<bool> selectcategorybutton=[false,false,false];
+  bool isloading =true;
+  String selectedcityname="";
+  int lastselectedcity =0;
+  List<bool> selectedcity = List.generate(81, (i) => false);
   // final campaignApiService campaignapi;
   // campaignpageRepository(this.campaignapi);
 
@@ -23,10 +27,33 @@ class campaignpageRepository extends ChangeNotifier{
     //Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
     campaignsamecity = orgmodel.data!.where((element) => element.city == "Istanbul").toList();
     Allcampaign=orgmodel.data!;
-    Allcampaign.sort((a,b){
-      return b.createdDate.compareTo(a.createdDate);
-    });
+    Sort();
+    // Allcampaign.sort((a,b){
+    //   return b.createdDate.compareTo(a.createdDate);
+    // });
+    isloading=false;
     notifyListeners();
+  }
+  void clearfilter(){
+    filtercategorybutton=[false,false,false];
+    selectedcityname="";
+    selectedcity=List.filled(81, false);
+    lastselectedcity =0;
+    notifyListeners();
+  }
+  void Sort(){
+    if (selectedSortvalue == 1) {
+      sortnewest();
+    } else if (selectedSortvalue ==
+        2) {
+      sortoldest();
+    } else if (selectedSortvalue ==
+        3) {
+      sortclosest();
+    } else if (selectedSortvalue ==
+        4) {
+      sortfurthest();
+    }
   }
   void changeselectedsortvalue(int value){
     selectedSortvalue=value;
@@ -103,19 +130,23 @@ class campaignpageRepository extends ChangeNotifier{
       }
     }).toList();
     Allcampaign.clear();
-    Allcampaign=filteredcampaign;
-    if(selectedSortvalue==1){
-      sortnewest();
-    }
-    else if(selectedSortvalue==2){
-      sortoldest();
-    }
-    else if(selectedSortvalue==3){
-      sortclosest();
-    }
-    else if(selectedSortvalue==4){
-      sortfurthest();
-    }
+    Allcampaign=[...filteredcampaign];
+    filteredcampaign.clear();
+    Sort();
+  }
+  void filterbycity(){
+    filteredcampaign=Allcampaign.where((element) {
+      if(element.city==selectedcityname){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }).toList();
+    Allcampaign.clear();
+    Allcampaign=[...filteredcampaign];
+    filteredcampaign.clear();
+    Sort();
   }
   List<Campaign> completed(){
     return Allcampaign.where((element) => element.limit-element.currentMoney<0).toList();

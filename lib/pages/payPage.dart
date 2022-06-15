@@ -3,9 +3,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yardimeliflutter/Model/ModelCampaign.dart';
 import 'package:yardimeliflutter/Model/ModelOganization.dart';
+import 'package:yardimeliflutter/Model/ModelUser.dart';
 import 'package:yardimeliflutter/pages/addbalancePage.dart';
 import 'package:flutter/services.dart';
+import '../API/GetUserApiService.dart';
 import '../API/payApiService.dart';
+import '../UserProvider.dart';
 import '../animation/horizontalScrollAnimation.dart';
 import '../authprovider.dart';
 
@@ -33,6 +36,12 @@ class _campaignpayPageState extends ConsumerState<payPage> {
   final paycontoller=TextEditingController();
 
   @override
+  void initState() {
+
+   // ref.read(userProvider).getUser(ref.read(authProvider));
+  }
+
+  @override
   void dispose() {
     paycontoller.dispose();
     super.dispose();
@@ -40,6 +49,7 @@ class _campaignpayPageState extends ConsumerState<payPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userprovider=ref.watch(userProvider);
     final authprovider = ref.watch(authProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -93,8 +103,8 @@ class _campaignpayPageState extends ConsumerState<payPage> {
                                   fontSize: 18
                                 ),
                               ),
-                              Text(
-                                "0.0 TL",
+                              Text (
+                                "${userprovider.user!.Balance} TL",
                                 style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,

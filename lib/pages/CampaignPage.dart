@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:yardimeliflutter/animation/horizontalScrollAnimation.dart';
 import 'package:yardimeliflutter/campaignpagestate.dart';
 import 'package:yardimeliflutter/pages/payPage.dart';
@@ -26,8 +27,7 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
   Widget build(BuildContext context) {
     final campaignprovider = ref.watch(campaignpageProvider);
     return Scaffold(
-      body: campaignprovider.Allcampaign == null ||
-              campaignprovider.Allcampaign.isEmpty
+      body: campaignprovider.isloading
           ? const Center(
               child: CircularProgressIndicator(),
             )
@@ -208,9 +208,10 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
       'Kırıkkale','Batman','Şırnak','Bartın','Ardahan','Iğdır','Yalova','Karabük','Kilis','Osmaniye',
       'Düzce',
     ];
-    bool hover=false;
-    int lastselected =1;
-    final List<bool> _selected = List.generate(81, (i) => false);
+    final itemController=ItemScrollController();
+    Future.delayed(Duration(milliseconds: 500)).then((value) => itemController.scrollTo(
+      index: campaignprovider.lastselectedcity, duration: Duration(milliseconds: 500),));
+
     return showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -313,29 +314,40 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                         child: Container(
                           padding: EdgeInsets.only(left: 10, top: 4,bottom: 4,right: 10),
                           alignment: Alignment.topCenter,
-                          child: ListView.builder(
+                          child: ScrollablePositionedList.builder(
+                            itemScrollController: itemController,
                             itemCount: cities.length,
                               itemBuilder: (_,i){
                                 return Container(
-                                  color:_selected[i]?Color(0xff7f0000):null,
+                                  color:campaignprovider.selectedcity[i]?Color(0xff7f0000):null,
                                   child: ListTile(
+                                    dense: true,
+                                    minLeadingWidth: 10,
                                     //tileColor: _selected[i]?Color(0xff7f0000):null,
                                     leading: Text("${i+1}",
                                     style: TextStyle(
-                                      color: _selected[i]?Colors.white:null,
+                                      color: campaignprovider.selectedcity[i]?Colors.white:null,
                                     ),
                                     ),
                                     onTap: () {
                                       setState((){
-                                        _selected[lastselected]=false;
-                                        _selected[i]=!_selected[i];
-                                        lastselected=i;
+                                        if(i!=campaignprovider.lastselectedcity){
+                                          campaignprovider.selectedcity[campaignprovider.lastselectedcity]=false;
+                                          campaignprovider.selectedcity[i]=!campaignprovider.selectedcity[i];
+                                          campaignprovider.lastselectedcity=i;
+                                          campaignprovider.selectedcityname=cities[i];
+                                        }
+                                        else{
+                                          campaignprovider.selectedcity[i]=!campaignprovider.selectedcity[i];
+                                          campaignprovider.selectedcityname="";
+                                          campaignprovider.lastselectedcity=0;
+                                        }
                                       });
                                     },
                                     title: Text(
                                         cities[i],
                                       style: TextStyle(
-                                        color: _selected[i]?Colors.white:null,
+                                        color: campaignprovider.selectedcity[i]?Colors.white:null,
                                       ),
                                     ),
                                   ),
@@ -360,7 +372,10 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-
+                                  setState((){
+                                    campaignprovider.clearfilter();
+                                    campaignprovider.getData();
+                                  });
                                 },
                                 child: Text("Filtreleri temizle"),
                               ),
@@ -372,7 +387,12 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                               child: ElevatedButton(
                                 onPressed: () async{
                                   await campaignprovider.getData();
-                                  campaignprovider.filterbycategory();
+                                  if(campaignprovider.filtercategorybutton.contains(true)){
+                                    campaignprovider.filterbycategory();
+                                  }
+                                  if(campaignprovider.selectedcityname!=""){
+                                    campaignprovider.filterbycity();
+                                  }
                                   Navigator.of(context).pop();
                                 },
                                 child: Text("Uygula"),
@@ -445,22 +465,8 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                               EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                           child: ElevatedButton(
                               onPressed: () {
-                                if (campaignprovider.selectedSortvalue == 1) {
-                                  campaignprovider.sortnewest();
-                                  Navigator.of(context).pop();
-                                } else if (campaignprovider.selectedSortvalue ==
-                                    2) {
-                                  campaignprovider.sortoldest();
-                                  Navigator.of(context).pop();
-                                } else if (campaignprovider.selectedSortvalue ==
-                                    3) {
-                                  campaignprovider.sortclosest();
-                                  Navigator.of(context).pop();
-                                } else if (campaignprovider.selectedSortvalue ==
-                                    4) {
-                                  campaignprovider.sortfurthest();
-                                  Navigator.of(context).pop();
-                                }
+                                campaignprovider.Sort();
+                                Navigator.of(context).pop();
                               },
                               child: campaignprovider.selectedSortvalue ==
                                       campaignprovider.lastselectedSortvalue

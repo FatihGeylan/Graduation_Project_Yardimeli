@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yardimeliflutter/API/addbalanceApiService.dart';
 import 'package:yardimeliflutter/authprovider.dart';
 
+import '../UserProvider.dart';
+
 
 class addbalacePage extends ConsumerStatefulWidget {
   const addbalacePage({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class addbalacePage extends ConsumerStatefulWidget {
 
 class _addbalacePageState extends ConsumerState<addbalacePage> {
   addbalanceApi addbalance =addbalanceApi();
+
   final paycontoller=TextEditingController();
   void dispose() {
     paycontoller.dispose();
@@ -22,7 +25,8 @@ class _addbalacePageState extends ConsumerState<addbalacePage> {
   }
   @override
   Widget build(BuildContext context) {
-    final userprovider = ref.watch(authProvider);
+    final userprovider=ref.watch(userProvider);
+    final authprovider = ref.watch(authProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -76,7 +80,7 @@ class _addbalacePageState extends ConsumerState<addbalacePage> {
                                 ),
                               ),
                               Text(
-                                "0.0 TL",
+                                "${userprovider.user!.Balance} TL",
                                 style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
@@ -174,7 +178,7 @@ class _addbalacePageState extends ConsumerState<addbalacePage> {
                                           child: Text("İptal et")),
                                       ElevatedButton(
                                           onPressed: () async{
-                                            var req= await addbalance.addbalance(userprovider, paycontoller.text);
+                                            var req= await addbalance.addbalance(authprovider, paycontoller.text);
                                             Navigator.pop(context);
                                             if(!req){
                                               showDialog(

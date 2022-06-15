@@ -16,18 +16,18 @@ class Usermodel {
 
   int? resultStatus;
   dynamic message;
-  List<User>? data;
+  User? data;
 
   factory Usermodel.fromJson(Map<String, dynamic> json) => Usermodel(
     resultStatus: json["resultStatus"],
     message: json["message"],
-    data: List<User>.from(json["data"].map((x) => User.fromJson(x))),
+    data: User.fromJson(json["data"])
   );
-
+  //List<User>.from(json["data"].map((x) => User.fromJson(x))),
   Map<String, dynamic> toJson() => {
     "resultStatus": resultStatus,
     "message": message,
-    "data": List<dynamic>.from(data!.map((x) => x.toJson())),
+    //"data": List<dynamic>.from(data!.map((x) => x.toJson())),
   };
 }
 
@@ -51,13 +51,13 @@ class User {
   String LastName;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    Id: json["Id"],
-    Email: json["Email"],
-    UserName: json["UserName"],
-    City: json["City"],
-    Balance: json["Balance"],
-    FirstName: json["FirstName"],
-    LastName: json["LastName"],
+    Id: json["id"],
+    Email: json["email"],
+    UserName: json["userName"],
+    City: json["city"],
+    Balance: json["balance"],
+    FirstName: json["firstName"],
+    LastName: json["lastName"],
   );
 
   Map<String, dynamic> toJson() => {
