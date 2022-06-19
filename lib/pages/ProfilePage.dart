@@ -14,30 +14,31 @@ class ProfilePage extends ConsumerStatefulWidget {
 }
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
-  // @override
-  // void initState() {
-  //   // final authprovider = ref.watch(authProvider);
-  //   ref.read(userProvider).getUser(ref.watch(authProvider));
-  //   super.initState();
-  // }
+  Authstate authstate=new Authstate();
+  @override
+  void initState() {
+    // final authprovider = ref.watch(authProvider);
+    ref.read(userProvider).getUser(authstate);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final authprovider = ref.watch(authProvider);
+    //final authprovider = ref.watch(authProvider);
     final userprovider = ref.watch(userProvider);
-    ref.read(userProvider).getUser(authprovider);
+    //ref.read(userProvider).getUser(authprovider);
     return Scaffold(
         body:
-        // userprovider.user == null ||
-        // userprovider.user.isEmpty
-        //     ? const Center(
-        //         child: CircularProgressIndicator(),
-        //       )
-        //     : RefreshIndicator(
-        //         onRefresh: () async {
-        //           ref.read(userProvider).getUser(authprovider);
-        //         },
-        //         child:
+        userprovider.user == null //||
+        //userprovider.user.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : RefreshIndicator(
+                onRefresh: () async {
+                  ref.read(userProvider).getUser(authstate);
+                },
+                child:
                 Column(
                   children: [
                     Padding(
@@ -54,7 +55,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                   bottom: 16.0,
                                   left: 16,
                                   right: 16),
-                              child: Text("Kullanıcı Adı",
+                              child: Text(userprovider.user!.FirstName+" "+userprovider.user!.LastName,
                                   style: TextStyle(
                                       fontSize: 25,
                                       color: Color(0xff7f0000),
@@ -71,7 +72,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                             color: Color(0xff7f0000)),
                                       ),
                                       TextSpan(
-                                          text: 'Kullanıcı Adı',
+                                          text: userprovider.user!.UserName,
                                           style: TextStyle(
                                             fontSize: 25,
                                             color: Color(0xff7f0000),
@@ -91,7 +92,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                             color: Color(0xff7f0000)),
                                       ),
                                       TextSpan(
-                                          text: " Email",
+                                          text: userprovider.user!.Email,
                                           style: TextStyle(
                                             fontSize: 25,
                                             color: Color(0xff7f0000),
@@ -111,7 +112,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                             color: Color(0xff7f0000)),
                                       ),
                                       TextSpan(
-                                          text: " Şehir",
+                                          text: userprovider.user!.City,
                                           style: TextStyle(
                                             fontSize: 25,
                                             color: Color(0xff7f0000),
@@ -132,7 +133,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                             color: Color(0xff7f0000)),
                                       ),
                                       TextSpan(
-                                          text: " Bakiye",
+                                          text: "${userprovider.user!.Balance}",
                                           style: TextStyle(
                                             fontSize: 25,
                                             color: Color(0xff7f0000),
@@ -185,7 +186,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     ),
                   ],
                 ),
-              );
+              ));
   }
 
   void _myCampaignsPage(BuildContext context) {

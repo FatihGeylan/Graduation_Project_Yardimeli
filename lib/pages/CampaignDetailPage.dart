@@ -52,7 +52,7 @@ class CampaignDetailPage extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Hero(
-                              tag: "orgpic" + campaign.name+axis,
+                              tag: "orgpic" + campaign.id+axis,
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: 250,

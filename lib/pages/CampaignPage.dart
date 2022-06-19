@@ -540,7 +540,7 @@ class CampaignCard extends StatelessWidget {
                 bottom: BorderSide(width: 2, color: Color(0xffe6e5ea)),
               )),
               child: Hero(
-                tag: "orgpic" + campaign.name + axis,
+                tag: "orgpic" + campaign.id + axis,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 80,

@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yardimeliflutter/UserProvider.dart';
+import 'package:yardimeliflutter/authprovider.dart';
 
 import 'API/CampaignApiService.dart';
 import 'Model/ModelCampaign.dart';
+import 'Model/ModelUser.dart';
 
 class campaignpageRepository extends ChangeNotifier{
   Campaignmodel orgmodel = new Campaignmodel();
@@ -19,13 +22,16 @@ class campaignpageRepository extends ChangeNotifier{
   String selectedcityname="";
   int lastselectedcity =0;
   List<bool> selectedcity = List.generate(81, (i) => false);
+  UserRepository userrepo=new UserRepository();
+  Authstate authstate=new Authstate();
+
   // final campaignApiService campaignapi;
   // campaignpageRepository(this.campaignapi);
 
   Future<void> getData() async {
     orgmodel = (await campaignApiService().getallCampaigns())!;
-
-    campaignsamecity = orgmodel.data!.where((element) => element.city == "Istanbul").toList();
+    await userrepo.getUser(authstate);
+    campaignsamecity = orgmodel.data!.where((element) => element.city == userrepo.user!.City).toList();
     Allcampaign=orgmodel.data!;
     Sort();
     isloading=false;
