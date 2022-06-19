@@ -8,6 +8,7 @@ import 'package:yardimeliflutter/pages/addbalancePage.dart';
 import 'package:flutter/services.dart';
 import '../API/GetUserApiService.dart';
 import '../API/payApiService.dart';
+import '../HomeScreen.dart';
 import '../UserProvider.dart';
 import '../animation/horizontalScrollAnimation.dart';
 import '../authprovider.dart';
@@ -268,7 +269,18 @@ class _campaignpayPageState extends ConsumerState<payPage> {
                                                   Navigator.pop(context);
                                                 },
                                                 child: Text("kapat")
-                                            )],
+                                            ),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                                                        (Route<dynamic> route) => false,
+                                                  );
+                                                },
+                                                child: Text("Ana sayfaya dön")
+                                            ),
+                                          ],
                                           elevation: 10,
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                                         ),

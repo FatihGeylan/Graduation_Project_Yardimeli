@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:yardimeliflutter/Model/ModelOganization.dart';
@@ -58,7 +60,7 @@ class CampaignDetailPage extends StatelessWidget {
                                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                                   image: DecorationImage(
                                     fit: BoxFit.fitWidth,
-                                    image: AssetImage("lib/pictures/${campaign.photoUrl}"),
+                                    image: Image.file(File(campaign.photoUrl)).image,
                                   ),
                                 ),
                               ),

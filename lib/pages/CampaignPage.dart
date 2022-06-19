@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -547,7 +549,7 @@ class CampaignCard extends StatelessWidget {
                         BorderRadius.vertical(top: Radius.circular(20)),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage("lib/pictures/${campaign.photoUrl}"),
+                      image: Image.file(File(campaign.photoUrl)).image,
                     ),
                   ),
                 ),

@@ -1,5 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 import 'package:yardimeliflutter/API/AddCampaignApiService.dart';
 import 'package:yardimeliflutter/Model/ModelCampaign.dart';
 import 'package:yardimeliflutter/authprovider.dart';
@@ -30,6 +37,8 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
   String dropdownValue = 'Ankara';
   var seen = Set<String>();
   Future<Campaign>? _futureCampaign;
+  var isimageselected=false;
+  File? image;
 
   List<String> cities = ['Adana','Adıyaman','Afyon','Ağrı','Amasya','Ankara','Antalya','Artvin','Aydın','Balıkesir',
     'Bilecik','Bingöl','Bitlis','Bolu','Burdur', 'Bursa','Çanakkale','Çankırı','Çorum','Denizli',
@@ -68,6 +77,37 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () async{
+                    try{
+                      final image =await ImagePicker().pickImage(source: ImageSource.gallery);
+                      if(image!=null){
+
+                        final imagetemp=File(image.path);
+
+                        // final directory=await getApplicationDocumentsDirectory();
+                        // final name=basename(image.path);
+                        // final imagep=File('${directory.path}/$name');
+                        // final imagetemp=await File(image.path).copy(imagep.path);
+
+                        setState(()=> this.image=imagetemp);
+                      }
+                    }on PlatformException catch(e){
+                      print(e);
+                    }
+
+                  },
+                  child: Container(
+                    color: Color(0xffd1d1d1),
+                    width: double.infinity,
+                    height: 200,
+                    child: image!=null?Image.file(
+                        image!,
+                      fit: BoxFit.fitWidth,
+                    ):Center(child: Icon(Icons.add)),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(18.0),
                   child: Container(
@@ -348,53 +388,91 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
                       style: ButtonStyle(),
                       onPressed: () async {
                         {
-                          if (_formKey2.currentState!.validate()) {
-                            try {
-                              var req = await _addCampaignAPI.AddCampaign(
-                                authprovider,
-                                _campaignNameController.text,
-                                _campaignDescriptionController.text,
-                                selectedCategoryID.toString(),
-                                int.parse(_campaignGoalController.text),
-                                'default.jpg',
-                                dropdownValue
-                              );
+                          if (_formKey2.currentState!.validate()&&image!=null) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context)=>AlertDialog(
+                                      content: Text("Kampanya bilgileri oluşturulduktan sonra değiştirilemez."),
+                                      actions: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("geri dön")),
+                                        ElevatedButton(
+                                            onPressed: () async{
+                                              final directory=await getApplicationDocumentsDirectory();
+                                              final name=basename(image!.path);
+                                              final imagep=File('${directory.path}/$name');
+                                              final imagetemp=await File(image!.path).copy(imagep.path);
 
-                              if(req?.statusCode ==200){
-                                print(req?.body);
-                              }
+                                              var req = await _addCampaignAPI.AddCampaign(
+                                                  authprovider,
+                                                  _campaignNameController.text,
+                                                  _campaignDescriptionController.text,
+                                                  selectedCategoryID.toString(),
+                                                  int.parse(_campaignGoalController.text),
+                                                  image!.path,
+                                                  dropdownValue
+                                              );
+                                              var decoded=json.decode(req!.body);
+                                              Navigator.pop(context);
+                                              if(decoded['resultStatus']  == 0){
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context)=>AlertDialog(
+                                                    content: Text("Kampanya oluşturuldu."),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: Text("kapat")
+                                                      ),
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => HomeScreen()),
+                                                                  (Route<dynamic> route) => false,
+                                                            );
+                                                          },
+                                                          child: Text("Ana sayfaya dön")
+                                                      ),
+                                                    ],
+                                                    elevation: 10,
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                                  ),
+                                                );
+                                              }
+                                              else{
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context)=>AlertDialog(
+                                                    content: Text("Kampanya oluşturulamadı"),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: Text("kapat")
+                                                      )],
+                                                    elevation: 10,
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                                  ),
+                                                );
+                                              }
+                                              // if(req?.statusCode ==200){
+                                              //   print(req?.body);
+                                              // }
 
-                                //_gotoHomeScreen(context);
+                                            },
+                                            child: Text("Kampanyamı oluştur")),
+                                      ]
+                              ));
 
-                              // else {
-                              //   print('KULLANICI OLUSTURULAMADI');
-                              // }
-                            } on Exception catch (e) {
-                              print(e.toString());
-                              print('KULLANICI OLUSTURULAMADI');
-                              // pushError(context);
-                            }
                           }
                         }
-                        // onPressed: () {
-                        // if(selectedCategoryID == 3){
-                        //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        //     content: Text(
-                        //         'Lütfen kategori seçiniz.'
-                        //     ),
-                        //   ));
-                        // }
-                        // if(dropdownValue == ''){
-                        //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        //     content: Text(
-                        //         'Lütfen şehir seçiniz.'
-                        //     ),
-                        //   ));
-                        // }
-                        // else{
-                        //
-                        // }
-                        //
                       },
                       child: Text(
                         'KAMPANYAMI OLUŞTUR',

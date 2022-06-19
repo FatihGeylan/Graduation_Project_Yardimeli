@@ -24,13 +24,10 @@ class campaignpageRepository extends ChangeNotifier{
 
   Future<void> getData() async {
     orgmodel = (await campaignApiService().getallCampaigns())!;
-    //Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
+
     campaignsamecity = orgmodel.data!.where((element) => element.city == "Istanbul").toList();
     Allcampaign=orgmodel.data!;
     Sort();
-    // Allcampaign.sort((a,b){
-    //   return b.createdDate.compareTo(a.createdDate);
-    // });
     isloading=false;
     notifyListeners();
   }
@@ -159,7 +156,3 @@ class campaignpageRepository extends ChangeNotifier{
 final campaignpageProvider =ChangeNotifierProvider((ref){
   return campaignpageRepository();
 });
-
-// final campaignlistProvider =FutureProvider((ref){
-//   return ref.watch(campaignpageProvider).getData();
-// });
