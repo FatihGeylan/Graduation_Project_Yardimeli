@@ -54,8 +54,6 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
 
   @override
   Widget build(BuildContext context) {
-
-
     // String dropdownValue = 'Şehrinizi Seçiniz.';
     final authprovider = ref.watch(authProvider);
     final campaignprovider = ref.watch(campaignpageProvider);
@@ -67,7 +65,7 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
             padding:
                 EdgeInsets.only(left: MediaQuery.of(context).size.width / 10),
             child: Text(
-              'İstanbul',
+              'Kampanya Oluştur',
               style: const TextStyle(color: Colors.white),
             ),
           ),
@@ -478,6 +476,9 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
                         'KAMPANYAMI OLUŞTUR',
                         style: TextStyle(fontSize: 16),
                       )),
+                ),
+                SizedBox(
+                  height: 16.0,
                 )
               ],
             ),
