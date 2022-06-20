@@ -17,7 +17,7 @@ class addbalacePage extends ConsumerStatefulWidget {
 
 class _addbalacePageState extends ConsumerState<addbalacePage> {
   addbalanceApi addbalance =addbalanceApi();
-
+  Authstate authstate=new Authstate();
   final paycontoller=TextEditingController();
   void dispose() {
     paycontoller.dispose();
@@ -198,6 +198,7 @@ class _addbalacePageState extends ConsumerState<addbalacePage> {
                                               );
                                             }
                                             else{
+                                              ref.read(userProvider).getUser(authstate);
                                               showDialog(
                                                 context: context,
                                                 builder: (context)=>AlertDialog(
