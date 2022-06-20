@@ -14,6 +14,7 @@ class UserRepository extends ChangeNotifier{
     user = usermodel.data!;
     notifyListeners();
   }
+
 }
 final userProvider = ChangeNotifierProvider((ref){
   return UserRepository();

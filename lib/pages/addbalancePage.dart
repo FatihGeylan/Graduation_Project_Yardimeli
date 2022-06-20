@@ -199,6 +199,7 @@ class _addbalacePageState extends ConsumerState<addbalacePage> {
                                             }
                                             else{
                                               ref.read(userProvider).getUser(authstate);
+                                              //userprovider.getUser(authstate);
                                               showDialog(
                                                 context: context,
                                                 builder: (context)=>AlertDialog(

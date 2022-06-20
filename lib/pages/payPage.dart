@@ -41,7 +41,7 @@ class _campaignpayPageState extends ConsumerState<payPage> {
 
    // ref.read(userProvider).getUser(ref.read(authProvider));
   }
-
+  Authstate authstate=new Authstate();
   @override
   void dispose() {
     paycontoller.dispose();
@@ -259,6 +259,7 @@ class _campaignpayPageState extends ConsumerState<payPage> {
                                       );
                                     }
                                     else{
+                                      userprovider.getUser(authstate);
                                       showDialog(
                                         context: context,
                                         builder: (context)=>AlertDialog(

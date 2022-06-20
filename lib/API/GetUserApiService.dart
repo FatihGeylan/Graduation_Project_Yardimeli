@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +15,9 @@ class userApiService {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.GetUserByUserName);
       var response = await http.get(url,
         headers: {
+        // HttpHeaders.authorizationHeader:
+        // authstate.auth!.accessToken,
+        //   HttpHeaders.contentTypeHeader: 'application/json',
           'Authorization':
           'Bearer ${authstate.auth!.accessToken}',
         },);

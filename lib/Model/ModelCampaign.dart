@@ -44,9 +44,10 @@ class Campaign {
     required this.city,
     required this.categoryId,
     required this.userId,
-    required this.userName
+    required this.userName,
+    required this.withdrawableMoney
   });
-
+  double withdrawableMoney;
   String id;
   String name;
   String description;
@@ -70,6 +71,7 @@ class Campaign {
     city: json["city"],
     categoryId: json["categoryId"],
     userId: json["userId"],
+    withdrawableMoney:json["withdrawableMoney"],
     userName: json["userName"],
   );
 

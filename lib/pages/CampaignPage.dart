@@ -98,46 +98,49 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                     SizedBox(
                       height: 8,
                     ),
-                    Container(
-                      padding: EdgeInsets.only(left: 16),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Şehrindeki kampanyalar",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 270,
-                      child: ListView.builder(
-                        physics: ClampingScrollPhysics(),
-                        itemCount: campaignprovider.campaignsamecity.length,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (c, a1, a2) =>
-                                        CampaignDetailPage(
-                                            campaignprovider
-                                                .campaignsamecity[index],
-                                            "vert"),
-                                    transitionsBuilder: (c, anim, a2, child) =>
-                                        FadeTransition(
-                                            opacity: anim, child: child),
-                                    transitionDuration:
+                    if(campaignprovider.campaignsamecity.length!=0)
+                      ...[
+                        Container(
+                          padding: EdgeInsets.only(left: 16),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Şehrindeki kampanyalar",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 270,
+                          child: ListView.builder(
+                            physics: ClampingScrollPhysics(),
+                            itemCount: campaignprovider.campaignsamecity.length,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (c, a1, a2) =>
+                                            CampaignDetailPage(
+                                                campaignprovider
+                                                    .campaignsamecity[index],
+                                                "vert",false),
+                                        transitionsBuilder: (c, anim, a2, child) =>
+                                            FadeTransition(
+                                                opacity: anim, child: child),
+                                        transitionDuration:
                                         Duration(milliseconds: 300),
-                                  ),
-                                );
-                              },
-                              child: CampaignCard(
-                                  campaignprovider.campaignsamecity[index],
-                                  "vert"));
-                        },
-                      ),
-                    ),
+                                      ),
+                                    );
+                                  },
+                                  child: CampaignCard(
+                                      campaignprovider.campaignsamecity[index],
+                                      "vert"));
+                            },
+                          ),
+                        ),
+                      ],
                     SizedBox(
                       height: 8,
                     ),
@@ -164,7 +167,7 @@ class _CampaignPageState extends ConsumerState<CampaignPage> {
                                       pageBuilder: (c, a1, a2) =>
                                           CampaignDetailPage(
                                               campaignprovider.Allcampaign[index],
-                                              "hori"),
+                                              "hori",false),
                                       transitionsBuilder: (c, anim, a2, child) =>
                                           FadeTransition(
                                               opacity: anim, child: child),

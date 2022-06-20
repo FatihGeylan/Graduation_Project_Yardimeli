@@ -104,7 +104,7 @@ class _MyCampaignsPageState extends ConsumerState<MyCampaignsPage> {
                                   pageBuilder: (c, a1, a2) =>
                                       CampaignDetailPage(
                                           campProvider.AllCampaignByUser[index],
-                                          "hori"),
+                                          "hori",true),
                                   transitionsBuilder: (c, anim, a2, child) =>
                                       FadeTransition(
                                           opacity: anim, child: child),

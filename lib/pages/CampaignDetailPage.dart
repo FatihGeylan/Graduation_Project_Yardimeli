@@ -12,7 +12,8 @@ import '../my_flutter_app_icons.dart';
 class CampaignDetailPage extends StatelessWidget {
   final Campaign campaign;
   final String axis;
-  const CampaignDetailPage(this.campaign, this.axis, {Key? key}) : super(key: key);
+  final bool mycampaign;
+  const CampaignDetailPage(this.campaign, this.axis,this.mycampaign ,{Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,44 @@ class CampaignDetailPage extends StatelessWidget {
                 ),),
             )
         ),
+        actions: [
+          if(mycampaign)
+            ...[Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context)=>AlertDialog(
+                      content: Text("Silinen kampanya geri alınamaz!!"),
+                      actions: [
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("kapat")
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+
+
+                              Navigator.pop(context);
+                            },
+                            child: Text("Onayla")
+                        ),
+                      ],
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    ),
+                  );
+
+                },
+                child: Icon(
+                    Icons.delete
+                ),
+              )
+          )]
+        ],
         backgroundColor: Color(0xff7f0000),
       ),
       body: Container(
@@ -128,6 +167,22 @@ class CampaignDetailPage extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if(mycampaign)...[
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(width: 2, color: Color(0xffe6e5ea)))),
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                child: Text(
+                                  "${campaign.withdrawableMoney} ₺ çekilebilir",
+                                  style: TextStyle(color: Color(0xff5e5e5e)),
+                                ),
+                              ),
+                            ),
+                          ],
 
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
@@ -146,25 +201,58 @@ class CampaignDetailPage extends StatelessWidget {
                                     top: BorderSide(width: 2, color: Color(0xffe6e5ea)))),
                             child: TextButton(
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (c, a1, a2) =>
-                                        payPage.campaign(
-                                            campaign),
-                                    transitionsBuilder: (c, anim, a2, child) =>
-                                        FadeTransition(
-                                            opacity: anim, child: child),
-                                    transitionDuration:
-                                    Duration(milliseconds: 300),
-                                  ),
-                                );
+                                if(!mycampaign){
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (c, a1, a2) =>
+                                          payPage.campaign(
+                                              campaign),
+                                      transitionsBuilder: (c, anim, a2, child) =>
+                                          FadeTransition(
+                                              opacity: anim, child: child),
+                                      transitionDuration:
+                                      Duration(milliseconds: 300),
+                                    ),
+                                  );
+                                }else{
+                                  showDialog(
+                                    context: context,
+                                    builder: (context)=>AlertDialog(
+                                      content: Text("${campaign.withdrawableMoney} Tl cüzdanınıza aktarılacaktır"),
+                                      actions: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("kapat")
+                                        ),
+                                        ElevatedButton(
+                                            onPressed: () {
+
+
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("Onayla")
+                                        ),
+                                      ],
+                                      elevation: 10,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                    ),
+                                  );
+                                }
+
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.handshake_outlined),
-                                  Text("   Bağışta bulun")
+                                  if(!mycampaign)...[
+                                    Icon(Icons.handshake_outlined),
+                                    Text("   Bağışta bulun")
+                                  ]else...[
+                                    Text("   Parayı çek")
+                                  ]
+
                                 ],
                               ),
                             ),
