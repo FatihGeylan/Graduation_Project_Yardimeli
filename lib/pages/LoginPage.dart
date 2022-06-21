@@ -125,7 +125,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 if(_formKey.currentState!.validate()){
                                   try{
                                     var req = await
-                                    _authAPI.login(_emailController.text,  _passwordController.text);
+                                    _authAPI.login(_emailController.text, _passwordController.text);
                                     Navigator.pop(context);
                                     var decoded=json.decode(req.body);
                                     if (decoded['resultStatus']  == 0) {

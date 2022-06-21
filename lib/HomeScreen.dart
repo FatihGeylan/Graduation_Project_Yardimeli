@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yardimeliflutter/pages/CampaignPage.dart';
+import 'package:yardimeliflutter/pages/LoginPage.dart';
 import 'package:yardimeliflutter/pages/OrganizationPage.dart';
 import 'package:yardimeliflutter/pages/ProfilePage.dart';
+
+import 'authprovider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     OrganizationPage(),
     ProfilePage()
   ];
+  Authstate authstate=new Authstate();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +41,65 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),),
             )
         ),
+        actions: [
+            ...[Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context)=>AlertDialog(
+                        content: Text("Çıkış yapmak üzeresiniz"),
+                        actions: [
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("Kapat")
+                          ),
+                          ElevatedButton(
+                              onPressed: () async {
+                                authstate.auth!.accessToken = "";
+                                Navigator.pop(context);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context)=>AlertDialog(
+                                      content: Text("Giriş Ekranına Yönlendiriyorsunuz"),
+                                      actions: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => LoginPage()),
+                                                    (Route<dynamic> route) => false,
+                                              );
+                                            },
+                                            child: Text("kapat")
+                                        ),
+                                      ],
+                                      elevation: 10,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                    ),
+                                  );
+                                  //Navigator.pop(context);
+
+                              },
+                              child: Text("Onayla")
+                          ),
+                        ],
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                      ),
+                    );
+
+                  },
+                  child: Icon(
+                      Icons.logout
+                  ),
+                )
+            )]
+        ],
        backgroundColor: Color(0xff7f0000),
       ),
       body: IndexedStack(
