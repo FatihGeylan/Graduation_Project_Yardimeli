@@ -56,9 +56,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   SizedBox(
                     height: MediaQuery.of(context).size.width/7,
                   ),
+                  Image.asset(
+                    "lib/pictures/YARDIMELİ.png",
+                    height: 150,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width/20,
+                  ),
                   Text('Hoşgeldiniz! Lütfen Giriş Yapınız.',style: TextStyle(color: Color(0xff7f0000),fontSize: 22),),
                   SizedBox(
-                    height: MediaQuery.of(context).size.width/7,
+                    height: MediaQuery.of(context).size.width/20,
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width/20*15,
@@ -166,6 +173,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     print(e.toString());
                                     // pushError(context);
                                   }
+                                }else{
+                                  Navigator.pop(context);
                                 }
                               }
                             }, child: Text('Giriş Yap'),

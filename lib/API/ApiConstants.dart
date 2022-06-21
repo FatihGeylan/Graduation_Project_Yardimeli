@@ -12,4 +12,5 @@ class ApiConstants {
   static String ChangeCity =  '/api/User/ChangeCity';
   static String GetCampaignsByToken = '/api/Campaign/GetCampaignsByToken';
   static String RemoveCampaign = '/api/Campaign/RemoveCampaign';
+  static String Withdraw = '/api/Campaign/Withdraw';
 }
