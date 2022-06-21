@@ -27,6 +27,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   // bool _success = false;
   // String _userEmail= '';
   AuthAPI _authAPI = AuthAPI();
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {

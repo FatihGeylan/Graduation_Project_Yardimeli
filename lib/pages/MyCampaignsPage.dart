@@ -63,12 +63,12 @@ class _MyCampaignsPageState extends ConsumerState<MyCampaignsPage> {
                         color: Color(0xff7f0000),
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      height: 200,
+                      height: MediaQuery.of(context).size.height/9*2,
                       padding: EdgeInsets.all(16.0),
                       child: Column(
                         children: [
                           Text(
-                            'Henüz bir kampanya oluşturmamışsınız. Hemen bir yardım eli bulmak için kampanya başlatabilirsiniz.',
+                            'Hemen bir yardım eli bulmak için kampanya başlatabilirsiniz.',
                             style: TextStyle(fontSize: 20, color: Colors.white),
                             textAlign: TextAlign.center,
                           ),

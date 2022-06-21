@@ -52,6 +52,13 @@ class _AddCampaignPageState extends ConsumerState<AddCampaignPage> {
   ];
   // List<String> uniquelist = cities.where((country) => seen.add(country)).toList();
 
+  void dispose() {
+    _campaignNameController.dispose();
+    _campaignDescriptionController.dispose();
+    _campaignGoalController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // String dropdownValue = 'Şehrinizi Seçiniz.';

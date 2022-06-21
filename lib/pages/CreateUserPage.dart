@@ -44,6 +44,14 @@ class _CreateUserPageState extends ConsumerState<CreateUserPage> {
   // bool _success = false;
   // String _userEmail= '';
   AuthAPI _authAPI = AuthAPI();
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _firstnameController.dispose();
+    _lastnameController.dispose();
+    _usernameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

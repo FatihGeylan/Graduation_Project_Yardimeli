@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:yardimeliflutter/Model/ModelOganization.dart';
 import 'package:yardimeliflutter/animation/horizontalScrollAnimation.dart';
+import 'package:yardimeliflutter/pages/MyCampaignsPage.dart';
 import 'package:yardimeliflutter/pages/payPage.dart';
 
+import '../API/DeleteCampaignApiService.dart';
 import '../Model/ModelCampaign.dart';
 import '../my_flutter_app_icons.dart';
 
@@ -13,6 +15,7 @@ class CampaignDetailPage extends StatelessWidget {
   final Campaign campaign;
   final String axis;
   final bool mycampaign;
+
   const CampaignDetailPage(this.campaign, this.axis,this.mycampaign ,{Key? key}) : super(key: key);
 
   @override
@@ -50,10 +53,53 @@ class CampaignDetailPage extends StatelessWidget {
                             child: Text("kapat")
                         ),
                         ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              var req;
 
+                              req = await  DeleteCampaignApi().deletecampaign(campaign.id);
 
                               Navigator.pop(context);
+                              if(!req){
+                                showDialog(
+                                  context: context,
+                                  builder: (context)=>AlertDialog(
+                                    content: Text("Hata!! Silme İşlemi Başarısız"),
+                                    actions: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("kapat")
+                                      )],
+                                    elevation: 10,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                  ),
+                                );
+                              }
+                              else{
+                                showDialog(
+                                  context: context,
+                                  builder: (context)=>AlertDialog(
+                                    content: Text("Kampanyanız başarıyla silindi."),
+                                    actions: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            Navigator.pushAndRemoveUntil(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => MyCampaignsPage()),
+                                                            (Route<dynamic> route) => false,
+                                                      );
+                                          },
+                                          child: Text("kapat")
+                                      ),
+                                    ],
+                                    elevation: 10,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                  ),
+                                );
+                                //Navigator.pop(context);
+                              }
                             },
                             child: Text("Onayla")
                         ),
