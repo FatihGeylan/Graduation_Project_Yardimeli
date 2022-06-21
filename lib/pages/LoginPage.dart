@@ -188,17 +188,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height/60,
                         ),
-
-                        Container(
-                          width: MediaQuery.of(context).size.height/5,
-                          child: ElevatedButton(onPressed: () {
-                            _gotoHomeScreen(context);
-                          },
-                              child: Text('TEST')),
-                        ),
                         SizedBox(height: 25),
-
-
                       ],
                     ),
                   ),
