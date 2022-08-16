@@ -1,10 +1,8 @@
 # yardimeliflutter
 
-A new Flutter project.
+Flutter charity donation application
 
 ## Getting Started
-
-Flutter charity donation application
 
 A few resources to get you started if this is your first Flutter project:
 
